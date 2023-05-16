@@ -4,11 +4,13 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ColorController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\SubcategoryController;
+// use App\Models\Favorite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +31,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('refresh-token', [AuthController::class, 'refreshToken']);
     Route::post('profile', [AuthController::class, 'profile']);
     Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('store-favorite', [FavoriteController::class, 'store']);
+
 });
 
 //------------------------------------------[ADMIN]---------------------------------------------------

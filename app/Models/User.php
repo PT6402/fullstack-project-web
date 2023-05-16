@@ -53,8 +53,5 @@ class User extends Authenticatable
     {
         return $this->hasMany(Review::class);
     }
-    public function birthday()
-    {
-        return $this->hasOne(Birthday::class);
-    }
+
 }
