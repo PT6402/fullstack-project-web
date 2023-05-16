@@ -4,8 +4,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ColorController;
+use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\SizeController;
@@ -32,6 +34,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('profile', [AuthController::class, 'profile']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('store-favorite', [FavoriteController::class, 'store']);
+    Route::post('store-payment', [PaymentController::class, 'store']);
 
 });
 
@@ -78,6 +81,12 @@ Route::get('color-size/{id}', [ProductController::class, 'getColorSizes']);
 Route::post('upload-image', [ProductImageController::class, 'imageStore']);
 Route::post('update-image', [ProductImageController::class, 'updateImage']);
 Route::get('view-image/{id}', [ProductImageController::class, 'indexImages']);
+//discount
+Route::post('store-discount', [DiscountController::class, 'store']);
+Route::get('edit-discount/{id}', [DiscountController::class, 'edit']);
+Route::post('update-discount', [DiscountController::class, 'update']);
+Route::get('delete-discount/{id}', [DiscountController::class, 'delete']);
+Route::get('view-discount', [DiscountController::class, 'show']);
 
 
 });

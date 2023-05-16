@@ -14,16 +14,20 @@ class DiscountController extends Controller
     public function store(Request $request)
     {
 
-        $validatedData = $request->validate([
+        $validatedData = Validator::make($request->all(),[
             'name' => 'required|string',
             'value' => 'required|integer|min:1',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'quantity' => 'required|integer|min:1',
         ]);
-
+        if ($validatedData->fails()) {
+            return response()->json([
+                'message' => $validatedData->messages()
+            ]);
+        }
         // Nếu ngày bắt đầu không được cung cấp, đặt ngày bắt đầu là ngày hiện tại
-        $startDate = $validatedData['startDate'];
+        $startDate = $request->start_date;
         if (empty($startDate)) {
             $startDate = Carbon::now();
         } else {
@@ -31,7 +35,7 @@ class DiscountController extends Controller
         }
 
         // Nếu ngày kết thúc không được cung cấp, đặt ngày kết thúc là ngày vô tận
-        $endDate = $validatedData['end_date'];
+        $endDate = $request->end_date;
         if (empty($endDate)) {
             $endDate = null;
         } else {
@@ -40,12 +44,12 @@ class DiscountController extends Controller
 
         // Tạo record mới trong bảng discount_codes
         $discount = new Discount();
-        $discount->name = $validatedData['name'];
+        $discount->name = $request->name;
         $discount->code = $this->generateRandomCode();
-        $discount->value = $validatedData['value'];
+        $discount->value = $request->value;
         $discount->start_date =  $startDate;
         $discount->end_date = $endDate;
-        $discount->quantity = $validatedData['quantity'];
+        $discount->quantity = $request->quantity;
         $discount->save();
 
 
@@ -82,13 +86,13 @@ class DiscountController extends Controller
     }
     public function update(Request $request)
     {
-        $validatedData = Validator::make($request->all([
+        $validatedData = Validator::make($request->all(),[
             'name' => 'required|string',
             'value' => 'required|integer|min:1',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'quantity' => 'required|integer|min:1',
-        ]));
+        ]);
         if ($validatedData->fails()) {
             return response()->json([
                 'message' => $validatedData->messages()
