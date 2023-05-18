@@ -14,7 +14,7 @@ class DiscountController extends Controller
     public function store(Request $request)
     {
 
-        $validatedData = Validator::make($request->all(),[
+        $validatedData = Validator::make($request->all(), [
             'name' => 'required|string',
             'value' => 'required|integer|min:1',
             'start_date' => 'nullable|date',
@@ -86,7 +86,7 @@ class DiscountController extends Controller
     }
     public function update(Request $request)
     {
-        $validatedData = Validator::make($request->all(),[
+        $validatedData = Validator::make($request->all(), [
             'name' => 'required|string',
             'value' => 'required|integer|min:1',
             'start_date' => 'nullable|date',
@@ -127,4 +127,5 @@ class DiscountController extends Controller
             'message' => 'Discount deleted successfully'
         ]);
     }
+
 }

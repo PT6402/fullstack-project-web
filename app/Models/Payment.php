@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Payment extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id','cart_id','paid','total_price','payment_method'];
+    protected $fillable = ['user_id','cart_id','status_payment','total_price','payment_method'];
     public function user()
 {
     return $this->belongsTo(User::class);
@@ -16,5 +16,9 @@ class Payment extends Model
 public function orders()
 {
     return $this->hasMany(Order::class);
+}
+public function cart()
+{
+    return $this->hasOne(Cart::class);
 }
 }

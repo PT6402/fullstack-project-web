@@ -18,7 +18,10 @@ return new class extends Migration
             $table->string('shipping_address');
             $table->integer('customer_phone');
             $table->integer('total_price');
-            $table->integer('status')->default(0);
+            $table->integer('discount_id')->nullable();
+            $table->integer('status')->default(0)->comment('0-handle,1-transport,2-success');
+            $table->boolean('status_payment')->default(false);
+            $table->string('payment_method')->comment('1-success,0-unsuccess');
             $table->timestamps();
         });
     }

@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Discount extends Model
 {
     use HasFactory;
-    protected $fillable=['name','code','value','start_date','end_date','quantity','used_count'];
+    protected $fillable = ['name', 'code', 'value', 'start_date', 'end_date', 'quantity', 'used_count'];
 
-
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
 }

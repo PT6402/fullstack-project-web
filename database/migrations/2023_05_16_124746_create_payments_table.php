@@ -18,8 +18,8 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('cart_id')->references('id')->on('carts')->onDelete('set null');
             $table->integer('total_price');
-            $table->string('payment_method');
-            $table->boolean('paid')->default(false);
+            $table->string('payment_method')->comment('COD|credit-card');
+            $table->boolean('status_payment')->default(false)->comment('1-success,0-unsuccess');
             $table->timestamps();
         });
     }

@@ -10,6 +10,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductImageController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\SubcategoryController;
 // use App\Models\Favorite;
@@ -35,7 +36,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('store-favorite', [FavoriteController::class, 'store']);
     Route::post('store-payment', [PaymentController::class, 'store']);
-
+    Route::post('code-discount', [CartController::class, 'applyDiscount']);
+    Route::post('find-review', [ReviewController::class, 'findReview']);
+    Route::post('store-review', [ReviewController::class, 'review']);
+    Route::post('cancel-order', [OrderController::class, 'cancelOrder']);
 });
 
 //------------------------------------------[ADMIN]---------------------------------------------------
@@ -45,48 +49,48 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
             'message' => 'You are in', 'status' => 200
         ], 200);
     });
-//Category
-Route::get('view-categories', [CategoryController::class, 'index']);
-Route::post('store-categories', [CategoryController::class, 'store']);
-Route::get('edit-categories/{id}', [CategoryController::class, 'edit']);
-Route::post('update-categories', [CategoryController::class, 'update']);
-Route::get('delete-categories/{id}', [CategoryController::class, 'delete']);
-Route::get('categories/{categoryId}/subcategories', [CategoryController::class, 'subcategories']);
-//SubCategory
-Route::get('view-subcategories', [SubcategoryController::class, 'index']);
-Route::post('store-subcategories', [SubCategoryController::class, 'store']);
-Route::get('edit-subcategories/{id}', [SubCategoryController::class, 'edit']);
-Route::post('update-subcategories', [SubCategoryController::class, 'update']);
-Route::get('delete-subcategories/{id}', [SubCategoryController::class, 'delete']);
-//color
-Route::get('view-color', [ColorController::class, 'index']);
-Route::post('store-color', [ColorController::class, 'store']);
-Route::get('edit-color/{id}', [ColorController::class, 'edit']);
-Route::post('update-color', [ColorController::class, 'update']);
-Route::get('delete-color/{id}', [ColorController::class, 'delete']);
-//size
-Route::get('view-size', [SizeController::class, 'index']);
-Route::post('store-size', [SizeController::class, 'store']);
-Route::get('edit-size/{id}', [SizeController::class, 'edit']);
-Route::post('update-size', [SizeController::class, 'update']);
-Route::get('delete-size/{id}', [SizeController::class, 'delete']);
-//Product
-Route::get('view-products', [ProductController::class, 'index']);
-Route::post('add-products', [ProductController::class, 'store']);
-Route::get('edit-products/{id}', [ProductController::class, 'edit']);
-Route::post('update-products', [ProductController::class, 'update']);
-Route::get('showAll', [ProductController::class, 'showAll']);
-Route::get('color-size/{id}', [ProductController::class, 'getColorSizes']);
-//image
-Route::post('upload-image', [ProductImageController::class, 'imageStore']);
-Route::post('update-image', [ProductImageController::class, 'updateImage']);
-Route::get('view-image/{id}', [ProductImageController::class, 'indexImages']);
-//discount
-Route::post('store-discount', [DiscountController::class, 'store']);
-Route::get('edit-discount/{id}', [DiscountController::class, 'edit']);
-Route::post('update-discount', [DiscountController::class, 'update']);
-Route::get('delete-discount/{id}', [DiscountController::class, 'delete']);
-Route::get('view-discount', [DiscountController::class, 'show']);
-
-
+    //Category
+    Route::get('view-categories', [CategoryController::class, 'index']);
+    Route::post('store-categories', [CategoryController::class, 'store']);
+    Route::get('edit-categories/{id}', [CategoryController::class, 'edit']);
+    Route::post('update-categories', [CategoryController::class, 'update']);
+    Route::get('delete-categories/{id}', [CategoryController::class, 'delete']);
+    Route::get('categories/{categoryId}/subcategories', [CategoryController::class, 'subcategories']);
+    //SubCategory
+    Route::get('view-subcategories', [SubcategoryController::class, 'index']);
+    Route::post('store-subcategories', [SubCategoryController::class, 'store']);
+    Route::get('edit-subcategories/{id}', [SubCategoryController::class, 'edit']);
+    Route::post('update-subcategories', [SubCategoryController::class, 'update']);
+    Route::get('delete-subcategories/{id}', [SubCategoryController::class, 'delete']);
+    //color
+    Route::get('view-color', [ColorController::class, 'index']);
+    Route::post('store-color', [ColorController::class, 'store']);
+    Route::get('edit-color/{id}', [ColorController::class, 'edit']);
+    Route::post('update-color', [ColorController::class, 'update']);
+    Route::get('delete-color/{id}', [ColorController::class, 'delete']);
+    //size
+    Route::get('view-size', [SizeController::class, 'index']);
+    Route::post('store-size', [SizeController::class, 'store']);
+    Route::get('edit-size/{id}', [SizeController::class, 'edit']);
+    Route::post('update-size', [SizeController::class, 'update']);
+    Route::get('delete-size/{id}', [SizeController::class, 'delete']);
+    //Product
+    Route::get('view-products', [ProductController::class, 'index']);
+    Route::post('add-products', [ProductController::class, 'store']);
+    Route::get('edit-products/{id}', [ProductController::class, 'edit']);
+    Route::post('update-products', [ProductController::class, 'update']);
+    Route::get('showAll', [ProductController::class, 'showAll']);
+    Route::get('color-size/{id}', [ProductController::class, 'getColorSizes']);
+    //image
+    Route::post('upload-image', [ProductImageController::class, 'imageStore']);
+    Route::post('update-image', [ProductImageController::class, 'updateImage']);
+    Route::get('view-image/{id}', [ProductImageController::class, 'indexImages']);
+    //discount
+    Route::post('store-discount', [DiscountController::class, 'store']);
+    Route::get('edit-discount/{id}', [DiscountController::class, 'edit']);
+    Route::post('update-discount', [DiscountController::class, 'update']);
+    Route::get('delete-discount/{id}', [DiscountController::class, 'delete']);
+    Route::get('view-discount', [DiscountController::class, 'show']);
+    //
+    Route::post('status-orders', [OrderController::class, 'updateOrderStatus']);
 });

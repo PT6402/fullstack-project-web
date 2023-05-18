@@ -15,11 +15,14 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('order_id');
             $table->text('comment')->nullable();
             $table->unsignedTinyInteger('rate')->default(0);
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
+            $table->integer('status')->default(0)->comment('0-Not yet,1-commented');
         });
     }
 

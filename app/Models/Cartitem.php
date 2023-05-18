@@ -26,4 +26,8 @@ class Cartitem extends Model
     {
         return $this->belongsTo(Size::class);
     }
+    public function totalPrice()
+{
+    return $this->price * $this->quantity;
+}
 }
