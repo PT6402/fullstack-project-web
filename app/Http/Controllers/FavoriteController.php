@@ -32,4 +32,28 @@ class FavoriteController extends Controller
 
         return response()->json(['message' => 'Product added to favorites', $favorite]);
     }
+
+    public function index(Request $request)
+    {
+        $user = $request->user();
+        $favorite = Favorite::where('user_id', $user->id)->get();
+        return response()->json(['favorite' => $favorite]);
+        
+    }
+
+    public function delete(Request $request)
+    {
+        $user = $request->user();
+        $favorite = Favorite::where('user_id', $user->id)->where('product_id', $request->product_id)->first();
+        if (!$favorite) {
+            return response()->json(['message' => 'No favorite existed'], 404);
+        }
+        $favorite->id->delete();
+
+        return response()->json(['favorite' => $favorite]);
+    }
+
+    
+
+   
 }
