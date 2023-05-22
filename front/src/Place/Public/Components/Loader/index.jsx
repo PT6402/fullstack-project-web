@@ -1,0 +1,45 @@
+/* eslint-disable react/prop-types */
+import { createPortal } from 'react-dom';
+
+import Backdrop from '../Backdrop';
+
+import styles from './index.module.scss';
+
+// import LoaderImage from '../../assets/images/loader.png';
+
+const Loader = ({
+  noPortal,
+  backdropClassName,
+  wrapperClassName,
+  // loaderClassName,
+}) => {
+  const backdropElement = document.getElementById('backdrop');
+  const overlaysElement = document.getElementById('overlays');
+
+  if (noPortal) {
+    return (
+      <>
+        <div className={`${styles.loader_wrapper} ${wrapperClassName}`}>
+         LOADING...
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      {createPortal(
+        <Backdrop className={backdropClassName} />,
+        backdropElement
+      )}
+      {createPortal(
+        <div className={`${styles.loader_wrapper} ${wrapperClassName}`}>
+        LOADING...
+        </div>,
+        overlaysElement
+      )}
+    </>
+  );
+};
+
+export default Loader;
