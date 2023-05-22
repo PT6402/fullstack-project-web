@@ -7,6 +7,7 @@ import Toast from "../../Components/Toast";
 import ToastMessage from "../../Components/ToastMessage";
 import Loader from "../../Components/Loader";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 export default function ForgetPassword() {
   const { login, isLoading, error } = useLogin();
 const navigate = useNavigate();
@@ -22,7 +23,11 @@ const navigate = useNavigate();
     //   email: emailInput.current.value,
     //   password: passwordInput.current.value,
     // });
-    navigate("/account/login/reset-password")
+    axios.post('api/forgetPassword',{email:emailInput.current.value}).then((res) => {
+      console.log(res);
+    });
+    console.log(emailInput.current.value);
+    // navigate("/account/login/reset-password")
 
   };
 

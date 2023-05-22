@@ -60,7 +60,7 @@ class ResetPasswordEmail extends Mailable
         return $this->view('emails.reset-password')
             ->subject('Reset your password')
             ->with([
-                'resetLink' => 'http://localhost:3000/reset-password?token=' . $this->token
+                'resetLink' => 'http://127.0.0.1:5173/account/login/reset-password?token=' . $this->token
             ]);
     }
 }

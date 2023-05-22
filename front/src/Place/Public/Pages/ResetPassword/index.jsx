@@ -10,7 +10,7 @@ import Loader from '../../Components/Loader';
 export default function ResetPassword() {
     const { state: routerState } = useLocation();
 
-    const { login, isLoading, error } = useLogin();
+    // const { login, isLoading, error } = useLogin();
   
     const [toastMessage, setToastMessage] = useState(null);
   
@@ -71,7 +71,7 @@ export default function ResetPassword() {
                         type="password"
                         placeholder="confirm password"
                         required
-                        ref={passwordInput}
+                        ref={confirmPasswordInput}
                       />
                     </label>
                     <button className={cx("button")} type="submit">
