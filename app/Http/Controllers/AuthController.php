@@ -80,9 +80,11 @@ class AuthController extends Controller
                     [
                         'status' => 200,
                         'username' => $user->name,
+                        'email' => $user->email,
                         'token' => $token,
                         'message' => 'Logged In Successfully',
-                        'role' => $role
+                        'role' => $role,
+
 
                     ]
                 );
