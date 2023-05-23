@@ -57,6 +57,10 @@ export const useLogin = () => {
                     ).toString();
                     localStorage.setItem("encryptedData", encryptedData);
                     console.log(res.data);
+                    dispatch({
+                        type: "LOGIN",
+                        payload: { ...userData },
+                    });
                     if (res.data.role === "admin") {
                         navigate("/admin/dashboard/home");
                     } else {

@@ -12,6 +12,30 @@ use Illuminate\Support\Facades\Auth;
 class CartController extends Controller
 {
 
+    public function index(){
+        $cart= Cart::all();
+        if(!$cart )
+        {
+            return response()->json(['message'=>'cart empty ']);
+        }
+        return response()->json(['cart'=>$cart]);
+    }
+
+    public function indexCartitem(Request $request){
+        $user=$request->user();
+        $cart=Cart::where('user_id',$user->id)->first();
+        $cartItem= Cartitem::where('cart_id',$cart->id)->get();
+        if(!$cart )
+        {
+            return response()->json(['message'=>'cart empty ']);
+        }
+        if(!$cartItem )
+        {
+            return response()->json(['message'=>'cartItem empty ']);
+        }
+        return response()->json(['cartitem'=>$cartItem]);
+    }
+
     public function addToCart(Request $request)
     {
         $product = Product::find($request->product_id);
@@ -57,6 +81,36 @@ class CartController extends Controller
         return response()->json(['message' => 'Item added to cart'], 200);
     }
 
+    public function update(Request $request)
+{
+    $cartItem =Cartitem::find($request->id);
+    $product = Product::find($cartItem->product_id);
+
+    if (!$product) {
+        return response()->json(['message' => 'Product not found'], 404);
+    }
+
+    $cartItem->quantity = $request->quantity;
+    $cartItem->color_id = $request->color_id;
+    $cartItem->size_id = $request->size_id;
+    $cartItem->total_price = $request->quantity * $product->product_price;
+    $cartItem->save();
+
+    $cart = $cartItem->cart;
+    $cart->total_price = $cart->items->sum('total_price');
+    $cart->save();
+
+    return response()->json(['message' => 'Cart item updated'], 200);
+
+
+}
+
+    public function edit($id){
+        $cartItem=Cartitem::find($id);
+        $product_id = $cartItem->product_id;
+        return response()->json(['product_id' => $product_id]);
+    }
+
     public function applyDiscount(Request $request)
     {
         $user = $request->user();
@@ -78,5 +132,10 @@ class CartController extends Controller
         // $cart->save();
 
         return response()->json(['totalPrice' =>  $cart->total_price]);
+    }
+    public function viewcart (Request $request){
+        $user = $request->user();
+        $cart = Cart::where('user_id',$user->id)->get();
+        return response()->json(['cart' =>  $cart]);
     }
 }

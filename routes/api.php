@@ -42,6 +42,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('find-review', [ReviewController::class, 'findReview']);
     Route::post('store-review', [ReviewController::class, 'review']);
     Route::post('cancel-order', [OrderController::class, 'cancelOrder']);
+    Route::get('view-cartitem',[CartController::class,'indexCartitem']);
+    Route::post('edit-cart',[CartController::class,'update']);
+    Route::get('edit-cartitem/{id}',[CartController::class,'edit']);
+    Route::post('view-cart-user',[CartController::class,'viewcart']);
 });
 
 //------------------------------------------[ADMIN]---------------------------------------------------
@@ -95,4 +99,5 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
     Route::get('view-discount', [DiscountController::class, 'show']);
     //
     Route::post('status-orders', [OrderController::class, 'updateOrderStatus']);
+    Route::get('view-cart',[CartController::class,'index']);
 });
