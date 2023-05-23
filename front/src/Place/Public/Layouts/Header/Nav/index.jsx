@@ -25,7 +25,7 @@ export default function Nav({ toggleSideNav, toggleCartModal }) {
         ) {
           return true;
         }
-  
+
         if (
           hasScrolled &&
           document.body.scrollTop < 4 &&
@@ -33,14 +33,14 @@ export default function Nav({ toggleSideNav, toggleCartModal }) {
         ) {
           return false;
         }
-  
+
         return hasScrolled;
       });
     };
-  
+
     useEffect(() => {
       window.addEventListener('scroll', resizeHeaderOnScroll);
-  
+
       return () => window.removeEventListener('scroll', resizeHeaderOnScroll);
     }, []);
 
@@ -115,13 +115,9 @@ export default function Nav({ toggleSideNav, toggleCartModal }) {
             Products
             </NavLink>
           </li>
-          <li>
-            <NavLink className={cx("link")} to="/category/men">
-             Men
-            </NavLink>
-          </li>
-        
-        
+
+
+
         </ul>
         <ul className={cx("icons_menu")}>
           <li className={`${cx("search_icon")} disabled-link`}>

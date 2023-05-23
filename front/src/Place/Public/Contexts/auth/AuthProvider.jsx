@@ -2,11 +2,10 @@
 import { useEffect, useReducer } from "react";
 
 import AuthContext from "./auth-context";
-
+import CryptoJS from "crypto-js";
 const initialState = {
     user: null,
     name: null,
-    lastName: null,
     email: null,
     phoneNumber: null,
     addresses: [],
@@ -21,7 +20,6 @@ const authReducer = (state, action) => {
             return {
                 user: action.payload.user,
                 name: action.payload.name,
-                lastName: action.payload.lastName,
                 email: action.payload.email,
                 phoneNumber: action.payload.phoneNumber || null,
                 addresses: action.payload.addresses || [],
@@ -44,7 +42,6 @@ const authReducer = (state, action) => {
                 ...state,
                 user: action.payload.user,
                 name: action.payload.name,
-                lastName: action.payload.lastName,
                 email: action.payload.email,
                 phoneNumber: action.payload.phoneNumber || null,
                 addresses: action.payload.addresses || [],
@@ -83,11 +80,18 @@ const AuthProvider = ({ children }) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
     useEffect(() => {
         const check = (user) => {
-            if (localStorage.getItem("auth_token")) {
-                const dataUser = localStorage.getItem("auth_token");
+            if (localStorage.getItem("encryptedData")) {
+                const encryptedData = localStorage.getItem("encryptedData");
+                const secretKey = localStorage.getItem("auth_token");
+                const decryptedData = CryptoJS.AES.decrypt(
+                    encryptedData,
+                    secretKey
+                ).toString(CryptoJS.enc.Utf8);
+                const { userData } = JSON.parse(decryptedData);
+                console.log(userData);
                 dispatch({
                     type: "AUTH_IS_READY",
-                    payload: { user, ...dataUser },
+                    payload: { ...userData },
                 });
             } else {
                 dispatch({
@@ -100,7 +104,7 @@ const AuthProvider = ({ children }) => {
         };
 
         return () => check();
-    }, []);
+    }, [dispatch]);
 
     console.log("auth-context", state);
 

@@ -18,7 +18,7 @@ export const useLogout = () => {
       axios.post(`/api/logout`).then((res) => {
         if (res.data.status === 200) {
           localStorage.removeItem("auth_token");
-          localStorage.removeItem("auth_name");
+          localStorage.removeItem("encryptedData");
           // swal("Success",res.data.message,"success");
           navigate("/");
         }

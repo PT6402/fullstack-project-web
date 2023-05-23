@@ -22,7 +22,7 @@ export const useSignUp = () => {
         .then((res) => {
           if (res.data.status === 200) {
             localStorage.setItem("auth_token", res.data.token);
-            localStorage.setItem("auth_name", res.data.username);
+
             const userData = {
               name,
               email,
