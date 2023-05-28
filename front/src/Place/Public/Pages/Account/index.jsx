@@ -70,7 +70,7 @@ const orders= []
             <section>
               <div className={`${cx("container")} main-container`}>
                 <div className={cx("welcome_wrapper")}>
-                  <p className={cx("greeting")}>Hello, {name}!</p>
+                  <p className={cx("greeting")}>Hi!, {name}</p>
                  { role_as==2 && <Button className={cx("admin_button")} onClick={handleAdmin}>
                     ADMIN
                   </Button>}

@@ -15,8 +15,10 @@ class Product extends Model
         'product_slug',
         'category_id',
         'subcategory_id',
-        'product_status'
-
+        'product_status',
+        'product_type',
+        'product_material'
+,'id'
     ];
 
     public function category()
@@ -48,7 +50,7 @@ class Product extends Model
     }
     public function colorSizes()
     {
-        return $this->belongsToMany(ColorSize::class);
+        return $this->belongsToMany(ColorSize::class,'color_sizes');
     }
     public function reviews()
     {

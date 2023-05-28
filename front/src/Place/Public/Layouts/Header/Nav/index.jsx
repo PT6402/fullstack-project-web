@@ -110,11 +110,7 @@ export default function Nav({ toggleSideNav, toggleCartModal }) {
               Women
             </NavLink>
           </li>
-          <li>
-            <NavLink className={cx("link")} to="/category/product">
-            Products
-            </NavLink>
-          </li>
+
 
 
 

@@ -1,84 +1,74 @@
-import { useState } from 'react';
+/* eslint-disable react/prop-types */
+import { useState } from "react";
 
-import { FaTrash } from 'react-icons/fa';
+import { FaTrash } from "react-icons/fa";
 
-import EditAddress from './EditAddress';
+import EditAddress from "./EditAddress";
 
-
-
-import styles from './index.module.scss';
-import CenterModal from '../../../Components/CenterModal';
+import styles from "./index.module.scss";
+import CenterModal from "../../../Components/CenterModal";
 
 const Address = ({
-  id,
-  name,
-  lastName,
-  phoneNumber,
-  address,
-  zipCode,
-  city,
-  province,
-  isMain,
-  displayOrder,
-  onDelete,
+    id,
+    address,
+    note,
+    city_province,
+    default_address,
+    onDelete,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
 
-  const toggleEditAddressModal = () => {
-    setIsOpen((prevState) => !prevState);
-  };
+    const toggleEditAddressModal = () => {
+        setIsOpen((prevState) => !prevState);
+    };
 
-  const handleDelete = async () => {
-    await onDelete(id);
-  };
+    const handleDelete = async () => {
+        await onDelete(id);
+    };
 
-  return (
-    <>
-      <CenterModal
-        modalClassName={styles.modal}
-        toggleModal={toggleEditAddressModal}
-      >
-        {isOpen && (
-          <EditAddress
-            toggleEditAddressModal={toggleEditAddressModal}
-            name={name}
-            lastName={lastName}
-            phoneNumber={phoneNumber}
-            address={address}
-            zipCode={zipCode}
-            city={city}
-            province={province}
-            isMain={isMain}
-            id={id}
-            displayOrder={displayOrder}
-          />
-        )}
-      </CenterModal>
-      <div className={styles.card}>
-        {isMain && <h3 className={styles.title}>Direccion predeterminada</h3>}
-        {!isMain && <h3 className={styles.title}>Direccion {displayOrder}</h3>}
-        <div className={styles.content}>
-          <h4 className={styles.name}>
-            {name} {lastName}
-          </h4>
-          <ul className={styles.info}>
-            <li>{address}</li>
-            <li>
-              {city}, {zipCode}
-            </li>
-            <li>{province}</li>
-          </ul>
-          <div className={styles.controls}>
-            <div className={styles.edit} onClick={toggleEditAddressModal}>
-              Editar
+    return (
+        <>
+            <CenterModal
+                modalClassName={styles.modal}
+                toggleModal={toggleEditAddressModal}
+            >
+                {isOpen && (
+                    <EditAddress
+                        toggleEditAddressModal={toggleEditAddressModal}
+                        address={address}
+                        note={note}
+                        city_province={city_province}
+                        default_address={default_address}
+                        id={id}
+                    />
+                )}
+            </CenterModal>
+            <div className={styles.card}>
+                {default_address && (
+                    <h3 className={styles.title}>Direccion predeterminada</h3>
+                )}
+                <div className={styles.content}>
+                    <ul className={styles.info}>
+                        <li>{address}</li>
+                        <li>{city_province}</li>
+                    </ul>
+                    <div className={styles.controls}>
+                        <div
+                            className={styles.edit}
+                            onClick={toggleEditAddressModal}
+                        >
+                            Edit
+                        </div>
+                        <div className={styles.delete}>
+                            <FaTrash
+                                className={styles.delete_icon}
+                                onClick={handleDelete}
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div className={styles.delete}>
-              <FaTrash className={styles.delete_icon} onClick={handleDelete} />
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
+        </>
+    );
 };
 export default Address;

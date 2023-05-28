@@ -97,6 +97,7 @@ const EditProfile = ({ toggleEditProfile, name, phoneNumber }) => {
                             <span>Phone:</span>
                             <input
                                 className={styles.input}
+                                placeholder="phone"
                                 type="tel"
                                 ref={phoneNumberInput}
                                 defaultValue={phoneNumber ? phoneNumber : ""}

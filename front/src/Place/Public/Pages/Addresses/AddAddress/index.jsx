@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState, useEffect, useRef } from "react";
 
 // import { useAddress } from '../../../../../hooks/useAddress';
@@ -16,6 +17,7 @@ import Loader from "../../../Components/Loader";
 
 const AddAddress = ({ toggleAddAddressModal }) => {
     const { createAddress, isLoading, error } = useAddress();
+<<<<<<< HEAD
     // const { createAddress, isLoading, error } = [];
 
     const [isChecked, setIsChecked] = useState(false);
@@ -50,6 +52,34 @@ const AddAddress = ({ toggleAddAddressModal }) => {
         setNotification(true);
     };
 
+=======
+
+
+    const [isChecked, setIsChecked] = useState(false);
+    const [notification, setNotification] = useState(false);
+    const [toastMessage, setToastMessage] = useState(null);
+
+    const handleCheckboxInput = () => {
+        setIsChecked((prevState) => !prevState);
+    };
+
+    const addressInput = useRef();
+    const noteInput = useRef();
+    const city_provinceInput = useRef();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        await createAddress({
+            address: addressInput.current.value,
+            note: noteInput.current.value,
+            city_province: city_provinceInput.current.value,
+            default_address: isChecked,
+        });
+
+        setNotification(true);
+    };
+
+>>>>>>> 27fffc2e2ebeb0d203549ad3d4863a70e06b8c93
     useEffect(() => {
         if (notification) {
             if (error) {
@@ -89,6 +119,7 @@ const AddAddress = ({ toggleAddAddressModal }) => {
                 <form id="form" className={styles.form} onSubmit={handleSubmit}>
                     <h2 className={styles.title}>Add Address:</h2>
                     <div className={styles.form_inputs_wrapper}>
+<<<<<<< HEAD
                         <label className={styles.label}>
                             <span>Name:</span>
                             <input
@@ -149,13 +180,45 @@ const AddAddress = ({ toggleAddAddressModal }) => {
 
                         <label className={styles.label}>
                             <span>Province</span>
+=======
+
+                        <label className={styles.label}>
+                            <span>Address:</span>
+>>>>>>> 27fffc2e2ebeb0d203549ad3d4863a70e06b8c93
                             <input
                                 className={styles.input}
                                 type="text"
                                 required
+<<<<<<< HEAD
                                 ref={provinceInput}
                             />
                         </label>
+=======
+                                ref={addressInput}
+                            />
+                        </label>
+                        <label className={styles.label}>
+                            <span>City/Province:</span>
+                            <input
+                                className={styles.input}
+                                type="text"
+                                required
+                                ref={city_provinceInput}
+                            />
+                        </label>
+                        <label className={styles.label}>
+                            <span>Note:</span>
+                            <input
+                                className={styles.input}
+                                type="text"
+                                inputMode="nuAddAddressModalmeric"
+                                required
+                                ref={noteInput}
+                            />
+                        </label>
+
+
+>>>>>>> 27fffc2e2ebeb0d203549ad3d4863a70e06b8c93
                         <label className={styles.checkbox}>
                             <input
                                 className={styles.input}

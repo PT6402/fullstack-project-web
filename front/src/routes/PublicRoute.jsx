@@ -19,7 +19,7 @@ export default function PublicRoute() {
       <CartProvider>
         <Routes>
           <Route element={<Layout />}>
-            <Route index element={<Home />} />
+            <Route index  element={<Home />} />
             <Route path="/category/:id" element={<Collections />} />
             <Route path="/product/:id" />
             <Route path="/checkout" element={<Checkout />} />
