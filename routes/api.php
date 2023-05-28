@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
@@ -13,16 +14,22 @@ use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\SubcategoryController;
+use App\Http\Controllers\User\CategoryController as UserCategoryController;
+use App\Http\Controllers\User\ProductController as UserProductController;
+use App\Http\Controllers\User\SubCategoryController as UserSubCategoryController;
 // use App\Models\Favorite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
 
-
 //-----------------------------------------[USER]---------------------------------------
 
+
 Route::post('register', [AuthController::class, 'register']);
+Route::get('list-category', [UserCategoryController::class, 'index']);
+Route::get('list-subcategory', [UserSubCategoryController::class, 'index']);
+Route::get('list-product', [UserProductController::class, 'index']);
 Route::post('forgetPassword', [AuthController::class, 'forgetPassword']);
 Route::post('mailResetPassword', [AuthController::class, 'mailResetPassword']);
 Route::post('login', [AuthController::class, 'login'])->name('login');
@@ -46,6 +53,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('edit-cart',[CartController::class,'update']);
     Route::get('edit-cartitem/{id}',[CartController::class,'edit']);
     Route::post('view-cart-user',[CartController::class,'viewcart']);
+    Route::post('store-address',[AddressController::class,'store']);
+    Route::post('edit-address',[AddressController::class,'edit']);
+    Route::post('view-address',[AddressController::class,'index']);
+    Route::post('update-address',[AddressController::class,'update']);
+    Route::post('delete-address',[AddressController::class,'delete']);
 });
 
 //------------------------------------------[ADMIN]---------------------------------------------------
@@ -89,8 +101,9 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
     Route::get('color-size/{id}', [ProductController::class, 'getColorSizes']);
     //image
     Route::post('upload-image', [ProductImageController::class, 'imageStore']);
-    Route::post('update-image', [ProductImageController::class, 'updateImage']);
     Route::get('view-image/{id}', [ProductImageController::class, 'indexImages']);
+    Route::post('image-main', [ProductImageController::class, 'Is_main']);
+    Route::get('delete-image/{id}', [ProductImageController::class, 'deleteImage']);
     //discount
     Route::post('store-discount', [DiscountController::class, 'store']);
     Route::get('edit-discount/{id}', [DiscountController::class, 'edit']);

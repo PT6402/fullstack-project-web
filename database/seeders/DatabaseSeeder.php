@@ -31,37 +31,60 @@ class DatabaseSeeder extends Seeder
 
         $categorys = [
             [
-                'category_name' => 'category 1',
-                'category_slug' => 'category-1',
+                'category_name' => 'men',
+                'category_slug' => 'men',
                 'category_status' => '0',
             ],
             [
-                'category_name' => 'category 2',
-                'category_slug' =>  'category-2',
+                'category_name' => 'women',
+                'category_slug' => 'women',
                 'category_status' => '0',
             ],
-            [
-                'category_name' => 'category 3',
-                'category_slug' =>  'category-3',
-                'category_status' => '0',
-            ],
+
         ];
         $subcategorys = [
             [
-                'category_id' => '1',
-                'subcategory_name' => 'subcategory 1',
-                'subcategory_slug' => 'subcategory-1',
+                'category_id' => 1,
+                'subcategory_name' => 'basas',
+                'subcategory_slug' => 'basas',
             ],
             [
-                'category_id' => '2',
-                'subcategory_name' => 'subcategory 2',
-                'subcategory_slug' => 'subcategory-2',
+                'category_id' => 1,
+                'subcategory_name' => 'vintas',
+                'subcategory_slug' => 'vintas',
             ],
             [
-                'category_id' => '3',
-                'subcategory_name' => 'subcategory 3',
-                'subcategory_slug' => 'subcategory-3',
+                'category_id' => 1,
+                'subcategory_name' => 'urbas',
+                'subcategory_slug' => 'urbas',
             ],
+            [
+                'category_id' => 1,
+                'subcategory_name' => 'pattas',
+                'subcategory_slug' => 'pattas',
+            ],
+            [
+                'category_id' => 2,
+                'subcategory_name' => 'basas',
+                'subcategory_slug' => 'basas',
+            ],
+            [
+                'category_id' => 2,
+                'subcategory_name' => 'vintas',
+                'subcategory_slug' => 'vintas',
+            ],
+            [
+                'category_id' => 2,
+                'subcategory_name' => 'urbas',
+                'subcategory_slug' => 'urbas',
+            ],
+            [
+                'category_id' => 2,
+                'subcategory_name' => 'pattas',
+                'subcategory_slug' => 'pattas',
+            ],
+
+
         ];
         $colors = [
             ['color_name' => 'Red', 'color_code' => '#FF0000'],
@@ -95,44 +118,124 @@ class DatabaseSeeder extends Seeder
         }
         foreach ($subcategorys as $i => $subcategory) {
             Subcategory::create($subcategory);
-            $category = Category::findOrFail($i + 1);
+            $category = Category::findOrFail($subcategory['category_id']);
             $category->increment('subcategory_count');
         }
 
         $products = [
             [
-                'product_name' => 'Product 1',
+                'product_name' => 'Workaday',
                 'product_description' => 'Description for product 1',
+                'product_type' => 'low top',
+                'product_material' => 'canvas',
                 'product_price' => 100000,
-                'product_slug' => 'product-1',
+                'product_slug' => 'workaday',
                 'subcategory_id' => 1,
                 'colors' => [1, 2],
                 'sizes' => [1, 2],
                 'quantities' => [10, 20]
             ],
             [
-                'product_name' => 'Product 2',
+                'product_name' => 'Jazico',
                 'product_description' => 'Description for product 2',
+                'product_type' => 'high top',
+                'product_material' => 'canvas',
                 'product_price' => 200000,
-                'product_slug' => 'product-2',
+                'product_slug' => 'jazico',
                 'subcategory_id' => 2,
                 'colors' => [3, 4],
                 'sizes' => [3, 4],
                 'quantities' => [5, 10]
-            ]
+            ],
+            [
+                'product_name' => 'Corluray Mix',
+                'product_description' => 'Description for product 1',
+                'product_type' => 'low top',
+                'product_material' => 'canvas',
+                'product_price' => 100000,
+                'product_slug' => 'corluray-mix',
+                'subcategory_id' => 3,
+                'colors' => [1, 2],
+                'sizes' => [1, 2],
+                'quantities' => [10, 20]
+            ],
+            [
+                'product_name' => 'Living Journey',
+                'product_description' => 'Description for product 2',
+                'product_type' => 'high top',
+                'product_material' => 'canvas',
+                'product_price' => 200000,
+                'product_slug' => 'living-journey',
+                'subcategory_id' => 4,
+                'colors' => [3, 4],
+                'sizes' => [3, 4],
+                'quantities' => [5, 10]
+            ],
+            [
+                'product_name' => 'Workaday',
+                'product_description' => 'Description for product 1',
+                'product_type' => 'low top',
+                'product_material' => 'canvas',
+                'product_price' => 100000,
+                'product_slug' => 'workaday',
+                'subcategory_id' => 5,
+                'colors' => [1, 2],
+                'sizes' => [1, 2],
+                'quantities' => [10, 20]
+            ],
+            [
+                'product_name' => 'Jazico',
+                'product_description' => 'Description for product 2',
+                'product_type' => 'high top',
+                'product_material' => 'canvas',
+                'product_price' => 200000,
+                'product_slug' => 'jazico',
+                'subcategory_id' => 6,
+                'colors' => [3, 4],
+                'sizes' => [3, 4],
+                'quantities' => [5, 10]
+            ],
+            [
+                'product_name' => 'Corluray Mix',
+                'product_description' => 'Description for product 1',
+                'product_type' => 'low top',
+                'product_material' => 'canvas',
+                'product_price' => 100000,
+                'product_slug' => 'corluray-mix',
+                'subcategory_id' => 7,
+                'colors' => [1, 2],
+                'sizes' => [1, 2],
+                'quantities' => [10, 20]
+            ],
+            [
+                'product_name' => 'Living Journey',
+                'product_description' => 'Description for product 2',
+                'product_type' => 'high top',
+                'product_material' => 'canvas',
+                'product_price' => 200000,
+                'product_slug' => 'living-journey',
+                'subcategory_id' => 8,
+                'colors' => [3, 4],
+                'sizes' => [3, 4],
+                'quantities' => [5, 10]
+            ],
+
         ];
 
         foreach ($products as $productData) {
             $product = new Product();
             $product->product_name=$productData['product_name'];
             $product->product_description=$productData['product_description'];
+            $product->product_type=$productData['product_type'];
+            $product->product_material=$productData['product_material'];
             $product->product_price=$productData['product_price'];
             $product->product_slug=$productData['product_slug'];
             $product->subcategory_id=$productData['subcategory_id'];
             $subcategory = Subcategory::find($productData['subcategory_id']);
             $product->category_id =$subcategory->category_id;
             $product->save();
-
+            $subcategory = SubCategory::find($productData['subcategory_id']);
+            $subcategory->increment('product_count');
             $colors = $productData['colors'];
             $sizes = $productData['sizes'];
             $quantities = $productData['quantities'];

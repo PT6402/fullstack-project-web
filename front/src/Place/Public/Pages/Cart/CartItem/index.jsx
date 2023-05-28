@@ -45,7 +45,7 @@ const CartItem = ({
       deleteItem(item);
     }
   };
-// 
+//
   // const thumbnail = require(`../../../assets/${_thumbnail}`);
 
   const clearProduct = urlId === url && '/product';
@@ -62,7 +62,7 @@ const CartItem = ({
             <p className={styles.title}>{`${type} ${model}`}</p>
             <p className={styles.color}>{color}</p>
             <p className={styles.size}>{size}</p>
-            <p className={styles.price}>${formatNumber(price)}</p>
+            <p className={styles.price}>${price}</p>
           </div>
           <img className={styles.image} src={`../../../../../../src/assets/${_thumbnail}`} alt="" />
         </div>
@@ -83,7 +83,7 @@ const CartItem = ({
             <FaPlus />
           </i>
         </div>
-        <div className={styles.total}>${addItemPrice({ price, amount })}</div>
+        <div className={styles.total}>${item.total_price}</div>
       </div>
     </Card>
   );

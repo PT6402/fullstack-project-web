@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('subcategory_name');
             $table->string('product_count')->default(0);
             $table->unsignedBigInteger('category_id');
-            $table->string('subcategory_slug')->unique();
+            $table->string('subcategory_slug');
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->integer('subcategory_status')->default(0);
             $table->timestamps();

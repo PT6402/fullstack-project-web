@@ -20,8 +20,7 @@ import styles from "./index.module.scss";
 const CartContent = ({ toggleCartModal }) => {
   const { items, totalAmount } = useCartContext();
   const { addItem, removeItem, deleteItem, isLoading, error } = useCart();
-  // const items=[];
-  // const totalAmount=[]
+
 
   const [toastMessage, setToastMessage] = useState(null);
 
@@ -39,7 +38,7 @@ const CartContent = ({ toggleCartModal }) => {
     toggleCartModal();
   }, ["Escape"]);
 
-  if (items.length === 0) {
+  if (items.length == 0) {
     return (
       <>
         <Toast>
@@ -79,13 +78,13 @@ const CartContent = ({ toggleCartModal }) => {
                   toggleCartModal={toggleCartModal}
                   key={item.id}
                   item={item}
-                  model={item.model}
-                  type={item.type}
-                  color={item.color}
-                  size={item.size}
-                  price={item.price}
-                  url={item.url}
-                  amount={item.amount}
+                  model={item.product.product_name}
+                  type={item.product.subcategory_id}
+                  color={item.color_id}
+                  size={item.size_id}
+                  price={item.product.product_price}
+                  url={item.product.product_slug}
+                  amount={item.quantity}
                   _thumbnail={item.thumbnail}
                   addItem={addItem}
                   removeItem={removeItem}
@@ -96,10 +95,10 @@ const CartContent = ({ toggleCartModal }) => {
             </div>
           </div>
         </div>
-        <div className={styles.footer_container}>
+        {/* <div className={styles.footer_container}>
           <div className={styles.footer_wrapper}>
             <p>
-              <span>Total: ${addAllItemsPrice(items)} </span> | {totalAmount}{" "}
+              <span>Total: {$items.} </span> | {totalAmount}{" "}
               {+totalAmount > 1 ? "items" : "item"}
             </p>
             <div className={styles.buttons_wrapper}>
@@ -125,7 +124,7 @@ const CartContent = ({ toggleCartModal }) => {
               </Button>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

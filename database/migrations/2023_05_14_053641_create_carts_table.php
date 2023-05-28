@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('discount_id')->nullable();
             $table->foreign('discount_id')->references('id')->on('discounts')->onDelete('set null');
             $table->integer('total_price')->default(0);
+            $table->integer('total_amount')->default(0);
             $table->timestamps();
         });
     }

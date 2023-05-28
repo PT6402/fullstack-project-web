@@ -1,8 +1,12 @@
+import axios from "axios";
 import Button from "../../../Components/Button/index";
 
 import styles from "./index.module.scss";
 
 const AccountAddresses = () => {
+    axios.post("/api/view-address").then((res)=>{
+console.log(res.data)
+    })
   const addresses = [];
 
   const defaultAddress = addresses.find((address) => address.isMain);

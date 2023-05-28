@@ -48,6 +48,7 @@ class ProductController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'description' => 'required|string',
+            'type' => 'required|string',
             'price' => 'required|numeric',
             // 'category_id' => 'required|exists:categories,id',
             'subcategory_id' => 'required|exists:subcategories,id',
@@ -56,7 +57,7 @@ class ProductController extends Controller
             'sizes' => 'required|array',
             'sizes.*' => 'exists:sizes,id',
             'quantity' => 'required|array',
-            'quantity.*' => 'required|integer|min:0',
+            'quantity.*' => 'required|min:0',
 
 
         ]);
@@ -71,6 +72,8 @@ class ProductController extends Controller
         $product->product_name = $request->input('name');
         $product->product_description = $request->input('description');
         $product->product_price = $request->input('price');
+        $product->product_type = $request->input('type');
+        $product->product_material = $request->input('material');
         $product->product_slug = strtolower(str_replace(' ', '-', $request->input('name')));
 
         $subcategory = Subcategory::findOrFail($request->input('subcategory_id'));
@@ -142,15 +145,17 @@ class ProductController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'description' => 'required|string',
+            'type' => 'required|string',
+            'material' => 'required|string',
             'price' => 'required|numeric',
-            'category_id' => 'required|exists:categories,id',
+            // 'category_id' => 'required|exists:categories,id',
             'subcategory_id' => 'required|exists:subcategories,id',
             'colors' => 'required|array',
             'colors.*' => 'exists:colors,id',
             'sizes' => 'required|array',
             'sizes.*' => 'exists:sizes,id',
             'quantity' => 'required|array',
-            'quantity.*' => 'required|integer|min:0',
+            'quantity.*' => 'required|min:0',
             'product_id' => 'required|exists:products,id',
         ]);
 
@@ -169,8 +174,10 @@ class ProductController extends Controller
         // Update product
         $product->product_name = $request->input('name');
         $product->product_description = $request->input('description');
+        $product->product_type = $request->input('type');
+        $product->product_material = $request->input('material');
         $product->product_price = $request->input('price');
-        $product->category_id = $request->input('category_id');
+
         // $product->subcategory_id = $request->input('subcategory_id');
         $product->product_slug = strtolower(str_replace(' ', '-', $request->input('name')));
 
@@ -183,7 +190,7 @@ class ProductController extends Controller
             $oldSubcategory->save();
 
             // Cập nhật sản phẩm với subcategory mới
-            $newSubcategory = Subcategory::find($request->subcategory_id);
+            $newSubcategory = SubCategory::find($request->subcategory_id);
             $product->subcategory()->associate($newSubcategory);
             $product->save();
 
@@ -218,12 +225,7 @@ class ProductController extends Controller
             $productColorSize->save();
         }
 
-        // Update product count for subcategory
-        $subcategoryId = $product->sub_category_id;
-        $productCount = DB::table('products')->where('sub_category_id', $subcategoryId)->count();
-        $subcategory = SubCategory::find($subcategoryId);
-        $subcategory->product_count = $productCount;
-        $subcategory->save();
+
 
 
         // Return response

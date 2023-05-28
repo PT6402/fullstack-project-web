@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useReducer } from "react";
+import CryptoJS from "crypto-js";
 
 import AuthContext from "./auth-context";
-import CryptoJS from "crypto-js";
+
 const initialState = {
     user: null,
     name: null,
