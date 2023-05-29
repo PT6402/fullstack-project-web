@@ -89,7 +89,7 @@ const AuthProvider = ({ children }) => {
                     secretKey
                 ).toString(CryptoJS.enc.Utf8);
                 const { userData } = JSON.parse(decryptedData);
-                console.log(userData);
+                console.log({...userData});
                 dispatch({
                     type: "AUTH_IS_READY",
                     payload: { ...userData },
@@ -105,7 +105,7 @@ const AuthProvider = ({ children }) => {
         };
 
         return () => check();
-    }, [dispatch]);
+    }, []);
 
     console.log("auth-context", state);
 

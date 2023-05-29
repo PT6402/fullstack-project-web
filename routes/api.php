@@ -11,6 +11,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductImageController;
+use App\Http\Controllers\Profile;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\SubcategoryController;
@@ -58,6 +59,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('view-address',[AddressController::class,'index']);
     Route::post('update-address',[AddressController::class,'update']);
     Route::post('delete-address',[AddressController::class,'delete']);
+    Route::post('update-phone-name',[Profile::class,'update_phone_name']);
+
 });
 
 //------------------------------------------[ADMIN]---------------------------------------------------

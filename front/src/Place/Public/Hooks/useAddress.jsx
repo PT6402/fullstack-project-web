@@ -2,14 +2,14 @@ import { useState } from "react";
 
 import { useAuthContext } from "./useAuthContext";
 import axios from "axios";
-
+import CryptoJS from "crypto-js";
 export const useAddress = () => {
     const { addresses, dispatch } = useAuthContext();
 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const userAddresses = [...addresses];
+    const userAddresses = [addresses];
 
     const createAddress = async ({
         address,
@@ -30,9 +30,36 @@ export const useAddress = () => {
                 })
                 .then((res) => {
                     if (res.data.status === 200) {
+                        let encryptedData =
+                            localStorage.getItem("encryptedData");
+                        let secretKey = localStorage.getItem("auth_token");
+                        let decryptedData = CryptoJS.AES.decrypt(
+                            encryptedData,
+                            secretKey
+                        ).toString(CryptoJS.enc.Utf8);
+                        const { userData } = JSON.parse(decryptedData);
+
+                        localStorage.removeItem("encryptedData");
+
+
+                        const data = {
+                            ...userData,
+                            addresses: [...addresses,res.data.address],
+                        };
+                        console.log(data)
+                        const string = JSON.stringify(data);
+                        const originalData = string;
+
+                        encryptedData = CryptoJS.AES.encrypt(
+                            originalData,
+                            secretKey
+                        ).toString();
+                        localStorage.setItem("encryptedData", encryptedData);
+
+                        console.log(res.data.address);
                         dispatch({
                             type: "UPDATE_ADDRESSES",
-                            payload: address,
+                            payload: res.data.address,
                         });
                         setIsLoading(false);
                     }

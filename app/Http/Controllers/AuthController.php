@@ -76,6 +76,7 @@ class AuthController extends Controller
                     $role = '';
                     $token = $user->createToken($user->email . '_Token', [''])->plainTextToken;
                 }
+                $address = $user->addresses()->get();
                 return response()->json(
                     [
                         'status' => 200,
@@ -84,7 +85,8 @@ class AuthController extends Controller
                         'token' => $token,
                         'message' => 'Logged In Successfully',
                         'role' => $role,
-
+                        'phone' => $user->phone,
+                        "address" => $address
 
                     ]
                 );

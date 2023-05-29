@@ -17,13 +17,13 @@ export default function Addresses() {
     const { addresses } = useAuthContext();
     const { deleteAddress, isLoading, error } = useAddress();
 
-
+console.log(addresses)
     const [isOpen, setIsOpen] = useState(false);
     const [toastMessage, setToastMessage] = useState(null);
 
-    const defaultAddress = addresses.find((address) => address.isMain);
+    const defaultAddress = addresses.find((address) => address.default_address==1);
 
-    const otherAddresses = addresses.filter((address) => !address.isMain);
+    const otherAddresses = addresses.filter((address) => address.default_address==0);
 
     const toggleAddAddressModal = () => {
         setIsOpen((prevState) => !prevState);

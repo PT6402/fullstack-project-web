@@ -31,7 +31,7 @@ class AddressController extends Controller
         $user->addresses()->save($address);
 
         return response()->json([
-            'message' => 'Address added successfully',
+            'address' =>  $address,
             'status' => 200
         ], 201);
     }

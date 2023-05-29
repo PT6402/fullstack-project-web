@@ -12,6 +12,8 @@ import AuthProvider from "../Place/Public/Contexts/auth/AuthProvider";
 import CartProvider from "../Place/Public/Contexts/cart/CartProvider";
 import ForgetPassword from "../Place/Public/Pages/ForgetPassword";
 import ResetPassword from "../Place/Public/Pages/ResetPassword";
+import ProductProvider from "../Place/Public/Contexts/product/ProductProvider";
+import Products from "../Place/Public/Pages/Products";
 
 export default function PublicRoute() {
   return (
@@ -21,7 +23,11 @@ export default function PublicRoute() {
           <Route element={<Layout />}>
             <Route index  element={<Home />} />
             <Route path="/category/:id" element={<Collections />} />
-            <Route path="/product/:id" />
+            <Route path="/product/:id"  element={
+                  <ProductProvider>
+                    <Products />
+                  </ProductProvider>
+                }/>
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/account" element={<Account />} />
             <Route path="/account/address" element={<Addresses />} />

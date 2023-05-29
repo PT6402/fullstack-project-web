@@ -1,17 +1,17 @@
-import axios from "axios";
+
 import Button from "../../../Components/Button/index";
 
 import styles from "./index.module.scss";
+import { useAuthContext } from "../../../Hooks/useAuthContext";
 
 const AccountAddresses = () => {
-    axios.post("/api/view-address").then((res)=>{
-console.log(res.data)
-    })
-  const addresses = [];
-
-  const defaultAddress = addresses.find((address) => address.isMain);
-
-  const otherAddresses = addresses.filter((address) => !address.isMain);
+    const { addresses } = useAuthContext();
+//  const address =[addresses]
+//  address.push(addresses)
+console.log(addresses)
+  const defaultAddress = addresses.find((addresss) => (addresss.default_address==1||addresss.default_address==true));
+console.log(defaultAddress)
+  const otherAddresses = addresses.filter((addresss) => (addresss.default_address==0||addresss.default_address==false));
 
   return (
     <div className={styles.addresses_container}>
@@ -29,15 +29,15 @@ console.log(res.data)
               <div className={styles.address_wrapper}>
                 <h3 className={styles.title}>Default address</h3>
 
-                <h4 className={styles.name}>
+                {/* <h4 className={styles.name}>
                   {defaultAddress.name} {defaultAddress.lastName}
-                </h4>
+                </h4> */}
                 <ul className={styles.info}>
                   <li>{defaultAddress.address}</li>
-                  <li>
+                  {/* <li>
                     {defaultAddress.city}, {defaultAddress.zipCode}
-                  </li>
-                  <li>{defaultAddress.province}</li>
+                  </li> */}
+                  <li>{defaultAddress.city_province}</li>
                 </ul>
               </div>
               {otherAddresses.map((address) => (
@@ -47,14 +47,14 @@ console.log(res.data)
                   </h3>
 
                   <h4 className={styles.name}>
-                    {address.name} {address.lastName}
+                  address:{address.address}
                   </h4>
                   <ul className={styles.info}>
-                    <li>{address.address}</li>
-                    <li>
+                    <li>note:{address.note}</li>
+                    {/* <li>
                       {address.city}, {address.zipCode}
-                    </li>
-                    <li>{address.province}</li>
+                    </li> */}
+                    <li>city/province:{address.city_province}</li>
                   </ul>
                 </div>
               ))}

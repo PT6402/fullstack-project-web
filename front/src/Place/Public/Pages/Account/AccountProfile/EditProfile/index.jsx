@@ -9,26 +9,21 @@ import ToastMessage from "../../../../Components/ToastMessage";
 import Loader from "../../../../Components/Loader";
 
 const EditProfile = ({ toggleEditProfile, name, phoneNumber }) => {
+    //hook
     const { editProfile, isLoading, error } = useProfile();
-    // const editProfile =[]
-    // const isLoading =[]
-    // const error =[]
-
+    //
     const [notification, setNotification] = useState(false);
     const [toastMessage, setToastMessage] = useState(null);
-
+    //
     const nameInput = useRef();
-
     const phoneNumberInput = useRef();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         await editProfile({
             name: nameInput.current.value,
             phoneNumber: phoneNumberInput.current.value,
         });
-
         setNotification(true);
     };
 
@@ -71,6 +66,7 @@ const EditProfile = ({ toggleEditProfile, name, phoneNumber }) => {
                 <form id="form" className={styles.form} onSubmit={handleSubmit}>
                     <h2 className={styles.title}>Edit profile</h2>
                     <div className={styles.form_inputs_wrapper}>
+                        {/* Name */}
                         <label className={styles.label}>
                             <span>Name:</span>
                             <input
@@ -82,17 +78,7 @@ const EditProfile = ({ toggleEditProfile, name, phoneNumber }) => {
                                 defaultValue={name}
                             />
                         </label>
-                        {/* <label className={styles.label}>
-              <span>Last name:</span>
-              <input
-                className={styles.input}
-                type="text"
-                placeholder="last name"
-                required
-                ref={lastNameInput}
-                defaultValue={lastName}
-              />
-            </label> */}
+                        {/* phone */}
                         <label className={styles.label}>
                             <span>Phone:</span>
                             <input
