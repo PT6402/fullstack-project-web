@@ -23,18 +23,21 @@ class AddressController extends Controller
         $address = new Address([
             'user_id' => $user->id,
             'address' => $request->input('address'),
-            'default_address' => $request->input('default_address', false),
+            'default_address' => $user->addresses()->count() === 0 ? true : $request->input('default_address', false),
             'city_province' => $request->input('city_province'),
             'note' => $request->input('note'),
         ]);
 
         $user->addresses()->save($address);
 
-        return response()->json([
-            'address' =>  $address,
+        $response = [
+            'address' => $user->addresses()->get(),
             'status' => 200
-        ], 201);
+        ];
+
+        return response()->json($response, 201);
     }
+
     public function edit(Request $request)
     {
         $user = $request->user();

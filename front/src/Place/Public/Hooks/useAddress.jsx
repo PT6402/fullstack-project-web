@@ -30,31 +30,31 @@ export const useAddress = () => {
                 })
                 .then((res) => {
                     if (res.data.status === 200) {
-                        let encryptedData =
-                            localStorage.getItem("encryptedData");
+                        let encryptedData = localStorage.getItem("encryptedData");
                         let secretKey = localStorage.getItem("auth_token");
                         let decryptedData = CryptoJS.AES.decrypt(
-                            encryptedData,
-                            secretKey
+                          encryptedData,
+                          secretKey
                         ).toString(CryptoJS.enc.Utf8);
-                        const { userData } = JSON.parse(decryptedData);
+                        const { userData, cartData } = JSON.parse(decryptedData);
 
                         localStorage.removeItem("encryptedData");
 
+                        console.log(userData);
 
-                        const data = {
-                            ...userData,
-                            addresses: [...addresses,res.data.address],
-                        };
-                        console.log(data)
-                        const string = JSON.stringify(data);
+                        userData.addresses =res.data.address;
+
+                        console.log(userData);
+
+                        const string = JSON.stringify({ userData,cartData });
                         const originalData = string;
 
                         encryptedData = CryptoJS.AES.encrypt(
-                            originalData,
-                            secretKey
+                          originalData,
+                          secretKey
                         ).toString();
                         localStorage.setItem("encryptedData", encryptedData);
+
 
                         console.log(res.data.address);
                         dispatch({

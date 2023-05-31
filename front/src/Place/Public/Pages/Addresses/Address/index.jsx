@@ -45,7 +45,7 @@ const Address = ({
             </CenterModal>
             <div className={styles.card}>
                 {default_address && (
-                    <h3 className={styles.title}>Direccion predeterminada</h3>
+                    <h3 className={styles.title}>Default address</h3>
                 )}
                 <div className={styles.content}>
                     <ul className={styles.info}>

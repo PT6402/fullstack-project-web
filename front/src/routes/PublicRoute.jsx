@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import Layout from "../Place/Public/Layouts";
 import Home from "../Place/Public/Pages/Home";
-import Collections from "../Place/Public/Pages/Collections";
+import Collections from "../Place/Public/Pages/Collections/index2.jsx";
 import Checkout from "../Place/Public/Pages/Checkout";
 import Account from "../Place/Public/Pages/Account";
 import Addresses from "../Place/Public/Pages/Addresses";
@@ -13,7 +13,7 @@ import CartProvider from "../Place/Public/Contexts/cart/CartProvider";
 import ForgetPassword from "../Place/Public/Pages/ForgetPassword";
 import ResetPassword from "../Place/Public/Pages/ResetPassword";
 import ProductProvider from "../Place/Public/Contexts/product/ProductProvider";
-import Products from "../Place/Public/Pages/Products";
+import Products from "../Place/Public/Pages/Products/index3.jsx";
 
 export default function PublicRoute() {
   return (

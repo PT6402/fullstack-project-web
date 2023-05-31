@@ -61,7 +61,7 @@ const CartContent = ({ toggleCartModal }) => {
       </>
     );
   }
-
+console.log(items)
   return (
     <>
       <Toast>
@@ -85,7 +85,7 @@ const CartContent = ({ toggleCartModal }) => {
                   price={item.product.product_price}
                   url={item.product.product_slug}
                   amount={item.quantity}
-                  _thumbnail={item.thumbnail}
+                  _thumbnail={item.image[0].url}
                   addItem={addItem}
                   removeItem={removeItem}
                   deleteItem={deleteItem}

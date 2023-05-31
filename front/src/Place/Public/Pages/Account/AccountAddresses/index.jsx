@@ -5,13 +5,13 @@ import styles from "./index.module.scss";
 import { useAuthContext } from "../../../Hooks/useAuthContext";
 
 const AccountAddresses = () => {
-    const { addresses } = useAuthContext();
+    const {addresses } = useAuthContext();
 //  const address =[addresses]
 //  address.push(addresses)
 console.log(addresses)
-  const defaultAddress = addresses.find((addresss) => (addresss.default_address==1||addresss.default_address==true));
+  const defaultAddress = addresses.find((address) => (address.default_address==1));
 console.log(defaultAddress)
-  const otherAddresses = addresses.filter((addresss) => (addresss.default_address==0||addresss.default_address==false));
+  const otherAddresses = addresses.filter((address) => (address.default_address==0));
 
   return (
     <div className={styles.addresses_container}>
@@ -26,6 +26,7 @@ console.log(defaultAddress)
 
           {addresses.length > 0 && (
             <>
+            {}
               <div className={styles.address_wrapper}>
                 <h3 className={styles.title}>Default address</h3>
 

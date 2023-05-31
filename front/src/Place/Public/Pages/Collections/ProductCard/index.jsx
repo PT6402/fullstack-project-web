@@ -27,7 +27,7 @@ const ProductCard = ({
     <>
       <div className={styles.card_wrapper}>
         <Card className={styles.card}>
-          <Link to={`/productos/${url}`} className={styles.link}>
+          <Link to={`/product/${url}`} className={styles.link}>
             <div className={styles.image_wrapper}>
               <img src={`../../../../../../src/assets/${_imageTop}`} alt="" className={styles.image_top}></img>
               <img
@@ -48,7 +48,7 @@ const ProductCard = ({
               <span>{`${numberOfVariants} colores`}</span>
             )}
           </li>
-          <li className={styles.price}>${formatNumber(price)}</li>
+          <li className={styles.price}>${price}</li>
         </ul>
       </div>
     </>

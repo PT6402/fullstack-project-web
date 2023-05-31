@@ -20,6 +20,7 @@ export default function Collections() {
         const fetchedProducts = await getCollection();
         setProducts(fetchedProducts);
       };
+      console.log(products)
 
       fetchProducts();
     }, []);
@@ -27,8 +28,9 @@ export default function Collections() {
     useEffect(() => {
       if (products) {
         let selectedProducts;
-        if (urlId === 'product') {
+        if (urlId ==='product') {
           selectedProducts = products;
+
         } else if (
           urlId === 'men' ||
           urlId === 'women'
@@ -40,14 +42,16 @@ export default function Collections() {
         } else {
           selectedProducts = null;
         }
+        console.log(selectedProducts)
 
         if (selectedProducts) {
           setCollection(selectedProducts);
+          console.log(selectedProducts)
         } else {
           navigate('/');
         }
       }
-    }, [navigate, products, urlId]);
+    }, [products, urlId]);
 
     return (
       <>
@@ -55,17 +59,17 @@ export default function Collections() {
         {collection && (
           <section>
             <div className={`${styles.container} main-container`}>
-              {collection.map((product) => (
+              {collection.map((product,index) => (
                 <ProductCard
-                  key={product.id}
+                  key={index}
                   model={product.model}
-                  color={product.color}
-                  price={product.price}
+                  color={product.colorSizes}
+                  price={product.product_price}
                   type={product.type}
-                  url={product.url}
-                  _imageTop={product.images[0].src}
-                  _imageBottom={product.images[1].src}
-                  numberOfVariants={product.numberOfVariants}
+                  url={product.product_slug}
+                //   _imageTop={product.images[0].src}
+                //   _imageBottom={product.images[1].src}
+                //   numberOfVariants={product.numberOfVariants}
                 />
               ))}
 

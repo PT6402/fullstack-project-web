@@ -30,14 +30,21 @@ class CartController extends Controller
             return response()->json(['cart' => 'cart empty']);
         }
 
-        $cartItem = Cartitem::where('cart_id', $cart->id)->with('product')->get();
+        $cartItems = Cartitem::where('cart_id', $cart->id)->with('product')->get();
 
-        if ($cartItem->isEmpty()) {
+        if ($cartItems->isEmpty()) {
             return response()->json(['cartitem' => 'cartItem empty']);
         }
 
-        return response()->json(['status' => 200, 'cartItem' =>$cartItem, 'cart' => $cart]);
+        $cartItemsWithImage = $cartItems->map(function ($cartItem) {
+            $product = $cartItem->product;
+            $cartItem['image'] = $product->images; // Thêm URL hình ảnh của sản phẩm vào cart item
+            return $cartItem;
+        });
+
+        return response()->json(['status' => 200, 'cartItem' => $cartItemsWithImage, 'cart' => $cart]);
     }
+
 
 
     public function addToCart(Request $request)

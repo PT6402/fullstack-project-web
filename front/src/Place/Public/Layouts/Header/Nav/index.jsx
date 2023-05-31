@@ -50,7 +50,9 @@ export default function Nav({ toggleSideNav, toggleCartModal }) {
         }
       };
       const navStyles = hasScrolled
-      ? `${cx('nav')} ${cx('hasScrolled')}`
+      ? `${cx('nav')}
+      ${cx('hasScrolled')}
+      `
       : cx('nav');
   return (
     <nav className={navStyles}>
