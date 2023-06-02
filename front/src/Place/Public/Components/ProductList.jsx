@@ -40,7 +40,7 @@ const ProductList = ({allShoes}) => {
     quickViewIdx[i] = !quickViewIdx[i];
     setQuickViewIdx([...quickViewIdx]);
   }
-console.log([...allShoes][0].images[0].url)
+
   return (
     <div className="bg-white lg:h-screen">
       <div className="mx-auto max-w-7xl overflow-hidden py-16 px-4 sm:py-4 sm:px-6 lg:px-4">
@@ -49,10 +49,10 @@ console.log([...allShoes][0].images[0].url)
             return(
             <div key={i} className=" text-sm">
                 <div onMouseOver={() => hover(i)} onMouseOut={() => hover(i)} className="relative">
-                  <Link to={"/product/" + shoe._id} className="group">
+                  <Link to={`/product/${shoe.id}`} className="group">
                     <div className='aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75 '>
                       <img
-                        src={`http://127.0.0.1:8000/${[...allShoes][i].images[0].url}`}
+                        src={`http://127.0.0.1:8000/${shoe.images[0].url}`}
                         alt={"product imageAlt"}
                         className="h-full w-full object-cover object-center"
                       />
@@ -62,7 +62,8 @@ console.log([...allShoes][0].images[0].url)
                   <button onClick={() => quickView(i)} className=' absolute z-10 bottom-5 left-9 p-3 bg-black border-black text-white w-3/4 rounded-lg border hover:bg-light-blue'>Quick View</button>
                   : ''}
                 </div>
-                <Link to={"/product/" + shoe.id}>
+
+                <Link to={`/product/${shoe.id}`}>
                   <h3 className="mt-4 font-medium text-gray-900 text-xl">{shoe.product_name}</h3>
                   {/* <p className="italic text-green">{shoe.categories[0]}</p> */}
                   <p className="mt-2 font-medium text-dark-blue">${shoe.product_price}</p>

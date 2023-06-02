@@ -1,27 +1,27 @@
-import CollectionRemeras from '../../../../assets/images/collection-remeras-top.jpg';
-import CollectionBuzos from '../../../../assets/images/collection-buzos-top.jpg';
-import CollectionAccesorios from '../../../../assets/images/collection-accesorios-bottom.jpg';
+import CollectionMen from '../../../../assets/images/Menu_Nam.jpg';
+import CollectionWomen from '../../../../assets/images/Menu_Nu.jpg';
+import CollectionProduct from '../../../../assets/images/catalogy-3.jpg';
 
 export const COLLECTIONS = [
   {
     id: 2,
-    image: CollectionRemeras,
+    image: CollectionMen,
     title: 'men',
     text: 'Remeras oversize y musculosas',
-    url: '/categorias/remeras',
+    url: '/category/men',
   },
   {
     id: 2,
-    image: CollectionBuzos,
+    image: CollectionWomen,
     title: 'women',
     text: 'Hoodies y buzos',
-    url: '/categorias/buzos',
+    url: '/category/women',
   },
   {
     id: 2,
-    image: CollectionAccesorios,
+    image: CollectionProduct,
     title: 'product',
     text: 'Gorros, pilusos y más',
-    url: '/categorias/accesorios',
+    url: '/category/product',
   },
 ];

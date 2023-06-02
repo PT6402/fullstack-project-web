@@ -181,7 +181,7 @@ const QuickView = (props) => {
                           </button>
 
                           <p className="absolute top-4 left-4 text-center sm:static sm:mt-8">
-                            <a href={'/product/' + shoe._id} className="font-medium text-dark-blue hover:text-light-blue">
+                            <a href={'/product/' + shoe.id} className="font-medium text-dark-blue hover:text-light-blue">
                               View full details
                             </a>
                           </p>

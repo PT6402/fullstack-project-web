@@ -13,7 +13,7 @@ import CartProvider from "../Place/Public/Contexts/cart/CartProvider";
 import ForgetPassword from "../Place/Public/Pages/ForgetPassword";
 import ResetPassword from "../Place/Public/Pages/ResetPassword";
 import ProductProvider from "../Place/Public/Contexts/product/ProductProvider";
-import Products from "../Place/Public/Pages/Products/index3.jsx";
+import Products from "../Place/Public/Pages/Products/index.jsx";
 
 export default function PublicRoute() {
   return (

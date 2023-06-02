@@ -26,7 +26,7 @@ const productReducer = (state, action) => {
             return {
                 ...state,
                 productIsReady: true,
-                selectedProduct: action.payload.product
+                selectedProduct: action.payload.selectedProduct,
             };
         }
         case "SELECT_COLOR": {
@@ -59,51 +59,59 @@ const ProductProvider = ({ children }) => {
 
     const [state, dispatch] = useReducer(productReducer, initialState);
 
-    const getProduct = async () => {
+    const getProduct =async () => {
         if (state.productIsReady) {
-            dispatch({ type: "CLEAR_PRODUCT" });
+         dispatch({ type: "CLEAR_PRODUCT" });
         }
 
-        let product;
-        axios.get("/api/list-product").then((res) => {
+        let selectedProduct=[];
+        // let inventory =[]
+        await axios.get("/api/list-product").then((res) => {
             if (res.data.status == 200) {
-                product = res.data.products;
+                selectedProduct = res.data.products;
+                // inventory = inventory.push(res.data.products.colorSizes);
                 console.log(res.data.products);
+                // console.log(res.data.products.colorSizes);
             }
         });
 
-        return { product };
+        return { selectedProduct };
     };
 
-    useEffect(() => {
-        const fetchProduct = async () => {
-            const { product } = await getProduct();
-
-            dispatch({
-                type: "SET_PRODUCT",
-                payload: {
-                    product,
-                },
-            });
+    useEffect(  () => {
+        const fetchProduct =async () => {
+            const { selectedProduct } = await getProduct();
+            if (selectedProduct) {
+                dispatch({
+                    type: "SET_PRODUCT",
+                    payload: {
+                        selectedProduct: selectedProduct,
+                    },
+                });
+                console.log(selectedProduct);
+            }
         };
 
         fetchProduct();
     }, [urlId]);
 
     useEffect(() => {
-        if (locationState === "/product") {
-            const fetchProduct = async () => {
-                const {
-                    product,
-                } = await getProduct();
 
-                dispatch({
-                    type: "SET_PRODUCT",
-                    payload: {
-                        product,
-                    },
-                });
-                navigate(".");
+        if (locationState == "/product") {
+
+            const fetchProduct = () => {
+                const { selectedProduct } = getProduct();
+
+                if (selectedProduct) {
+                    dispatch({
+                        type: "SET_PRODUCT",
+                        payload: {
+                            selectedProduct: selectedProduct
+                        },
+                    });
+                    console.log(selectedProduct)
+                    navigate(".");
+                }
             };
 
             fetchProduct();

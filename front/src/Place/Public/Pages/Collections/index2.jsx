@@ -91,11 +91,11 @@ export default function Collections() {
                 selectedProducts = products;
                 //
             } else if (urlId == "men" || urlId == "women") {
-                const arrayFilter = products.filter(
-                    (product) => [...product].category_name === urlId
+                const arrayFilter = products[0].filter(
+                    (product) => product.category_name === urlId
                 );
                 selectedProducts = [arrayFilter];
-                console.log(selectedProducts);
+                console.log(products[0]);
             } else {
                 selectedProducts = null;
             }

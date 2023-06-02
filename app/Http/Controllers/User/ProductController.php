@@ -21,7 +21,7 @@ class ProductController extends Controller
         foreach ($products as $product) {
             $colorSizes = ColorSize::join('colors', 'color_sizes.color_id', '=', 'colors.id')
                 ->join('sizes', 'color_sizes.size_id', '=', 'sizes.id')
-                ->select('colors.color_name', 'sizes.size_name','color_sizes.quantity' )
+                ->select('colors.color_name', 'color_sizes.color_id','sizes.size_name','color_sizes.size_id','color_sizes.quantity' )
                 ->where('color_sizes.product_id', $product->id)
                 ->get()
                 ->map(function ($item) {
