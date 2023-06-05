@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Cartitem;
 use App\Models\Discount;
 use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,29 +22,195 @@ class CartController extends Controller
         return response()->json(['cart' => $cart]);
     }
 
+    // public function indexCartitem(Request $request)
+    // {
+    //     $user = $request->user();
+    //     $cart = Cart::where('user_id', $user->id)->first();
+
+    //     if (!$cart) {
+    //         return response()->json(['cart' => 'cart empty']);
+    //     }
+
+    //     $cartItems = Cartitem::join('colors', 'cartitems.color_id', '=', 'colors.id')
+    //         ->join('sizes', 'cartitems.size_id', '=', 'sizes.id')
+    //         ->select('cartitems.*', 'colors.color_name', 'sizes.size_name')
+    //         ->where('cart_id', $cart->id)
+    //         ->with(['product' => function ($query) {
+    //             $query->select('id', 'product_name', 'product_type', 'product_material', 'product_description', 'product_price', 'category_id', 'subcategory_id', 'product_slug', 'product_status');
+    //             $query->with(['images' => function ($query) {
+    //                 $query->select('id', 'product_id', 'color_id', 'url', 'is_main');
+    //             }]);
+    //         }])
+    //         ->get();
+
+    //     if ($cartItems->isEmpty()) {
+    //         return response()->json(['cartitem' => 'cartItem empty']);
+    //     }
+
+    //     $cartItems = $cartItems->map(function ($item) {
+    //         $item->makeHidden(['created_at', 'updated_at']);
+    //         $item->product->makeHidden(['created_at', 'updated_at']);
+
+    //         $filteredImages = collect();
+
+    //         foreach ($item->product->images as $image) {
+    //             if ($image->color_id == $item->color_id) {
+    //                 $filteredImages->push($image);
+    //             }
+    //         }
+
+    //         $item->product->images = $filteredImages;
+
+    //         return $item;
+    //     });
+
+    //     $cart = $cart->makeHidden(['created_at', 'updated_at']);
+
+    //     return response()->json(['status' => 200, 'cartItem' => $cartItems, 'cart' => $cart]);
+    // }
+
+
+
+
+
     public function indexCartitem(Request $request)
     {
         $user = $request->user();
         $cart = Cart::where('user_id', $user->id)->first();
 
-        if (!$cart) {
-            return response()->json(['cart' => 'cart empty']);
-        }
+        $cartItems = Cartitem::join('products', 'cartitems.product_id', '=', 'products.id')
+            ->join('colors', 'cartitems.color_id', '=', 'colors.id')
+            ->join('sizes', 'cartitems.size_id', '=', 'sizes.id')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->join('subcategories', 'products.subcategory_id', '=', 'subcategories.id')
+            ->where('cart_id', $cart->id)
+            ->select(
+                'cartitems.id',
+                'cartitems.cart_id',
+                'cartitems.product_id',
+                'cartitems.color_id',
+                'cartitems.size_id',
+                'cartitems.quantity',
+                'cartitems.total_price',
+                'colors.color_name',
+                'sizes.size_name',
+                'products.id as product_id',
+                'products.product_name',
+                'products.product_slug',
+                'products.product_price',
+                'products.product_description',
+                'products.product_type',
+                'products.product_material',
+                'categories.category_name',
+                'subcategories.subcategory_name'
+            )
+            ->get();
 
-        $cartItems = Cartitem::where('cart_id', $cart->id)->with('product')->get();
+        $products = $cartItems->groupBy('product_id')->map(function ($items) {
+            $product = $items->first();
 
-        if ($cartItems->isEmpty()) {
-            return response()->json(['cartitem' => 'cartItem empty']);
-        }
+            $colorSizes = [];
 
-        $cartItemsWithImage = $cartItems->map(function ($cartItem) {
-            $product = $cartItem->product;
-            $cartItem['image'] = $product->images; // Thêm URL hình ảnh của sản phẩm vào cart item
-            return $cartItem;
+            $items->groupBy('color_id')->each(function ($colorItems) use ($product, &$colorSizes) {
+                $color = $colorItems->first();
+                $sizeIds = $colorItems->pluck('size_id')->unique();
+
+                $sizes = $sizeIds->map(function ($sizeId) use ($colorItems) {
+                    $size = $colorItems->firstWhere('size_id', $sizeId);
+
+                    $categoryId = ucwords(str_replace(' ', '', $size->category_name));
+                    $productName = ucwords(str_replace(' ', '', $size->product_name));
+                    $colorName = ucwords(str_replace(' ', '', $size->color_name));
+                    $sizeName = ucwords(str_replace(' ', '', $size->size_name));
+                    $colorId = $size->color_id;
+
+                    $sizeId = $productName . $colorName . $sizeName . $colorId;
+                    return [
+                        'id' => $sizeId,
+                        'size_name' => $size->size_name,
+                        'quantity' => $size->quantity,
+                    ];
+                });
+
+                $colorName = $color->color_name;
+
+                $images = ProductImage::where('product_id', $product->product_id)
+                    ->where('color_id', $color->color_id)
+                    ->select('url', 'id', 'is_main')
+                    ->get()
+                    ->map(function ($item) {
+                        return [
+                            'url' => $item->url,
+                            'id' => $item->id,
+                            'is_main' => $item->is_main,
+                        ];
+                    });
+
+                $categoryName = strtolower(str_replace(' ', '-', $product->category_name));
+                $productName = strtolower(str_replace(' ', '-', $product->product_name));
+                $colorSlug = strtolower(str_replace(' ', '-', $colorName));
+                $url = $categoryName . '-' . $productName . '-' . $colorSlug;
+
+                // Tính toán giá tổng cộng cho mỗi màu sắc
+                $totalPrice = $colorItems->sum('total_price');
+                $productId = $product->product_id;
+                $colorId =  $productId . '000' . $color->color_id;
+                $colorSizes[] = [
+                    'id' =>  $colorId,
+                    'color_name' => $colorName,
+                    'sizes' => $sizes,
+                    'images' => $images,
+                    'url' => $url,
+                    'total_price' => $totalPrice, // Thêm giá tổng cộng cho màu sắc
+                ];
+            });
+
+            $urls = collect($colorSizes)->pluck('url')->toArray();
+
+
+
+            return [
+                'id' => $product->product_id,
+                'product_name' => $product->product_name,
+                'product_slug' => $product->product_slug,
+                'product_price' => $product->product_price,
+                'product_description' => $product->product_description,
+                'product_type' => $product->product_type,
+                'product_material' => $product->product_material,
+                'category_name' => $product->category_name,
+                'subcategory_name' => $product->subcategory_name,
+                'colorSizes' => $colorSizes,
+                'product_url' => $urls,
+
+            ];
         });
 
-        return response()->json(['status' => 200, 'cartItem' => $cartItemsWithImage, 'cart' => $cart]);
+        return response()->json([
+            'status' => 200,
+            'items' => $products->values(),
+            'totalAmount' => $cart->total_amount,
+            'discount' => $cart->discount,
+            'totalPrice' => $cart->total_price,
+        ]);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -89,7 +256,7 @@ class CartController extends Controller
         $cart->total_price = $cart->items->sum('total_price');
         $cart->save();
 
-        return response()->json(['message' => 'Item added to cart'], 200);
+        return response()->json(['status'=>200]);
     }
 
 

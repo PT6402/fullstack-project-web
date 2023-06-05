@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Cartitem extends Model
 {
     use HasFactory;
+
     protected $fillable = ['product_id', 'color_id', 'size_id', 'quantity','total_price'];
     public function cart()
     {
@@ -30,4 +31,9 @@ class Cartitem extends Model
 {
     return $this->price * $this->quantity;
 }
+public function colorSize()
+{
+    return $this->belongsTo(ColorSize::class, 'color_sizes');
+}
+
 }

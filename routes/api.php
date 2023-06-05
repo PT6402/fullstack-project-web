@@ -31,6 +31,7 @@ Route::post('register', [AuthController::class, 'register']);
 Route::get('list-category', [UserCategoryController::class, 'index']);
 Route::get('list-subcategory', [UserSubCategoryController::class, 'index']);
 Route::get('list-product', [UserProductController::class, 'index']);
+Route::get('list-product/{productUrl}', [UserProductController::class, 'show']);
 Route::post('forgetPassword', [AuthController::class, 'forgetPassword']);
 Route::post('mailResetPassword', [AuthController::class, 'mailResetPassword']);
 Route::post('login', [AuthController::class, 'login'])->name('login');
@@ -50,7 +51,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('find-review', [ReviewController::class, 'findReview']);
     Route::post('store-review', [ReviewController::class, 'review']);
     Route::post('cancel-order', [OrderController::class, 'cancelOrder']);
-    Route::get('view-cartitem',[CartController::class,'indexCartitem']);
+    Route::post('view-cartitem',[CartController::class,'indexCartitem']);
+    Route::get('view-product-test',[CartController::class,'showProduct']);
     Route::post('edit-cart',[CartController::class,'update']);
     Route::get('edit-cartitem/{id}',[CartController::class,'edit']);
     Route::post('view-cart-user',[CartController::class,'viewcart']);

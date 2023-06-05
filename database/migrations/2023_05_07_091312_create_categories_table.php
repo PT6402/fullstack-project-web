@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('category_slug')->unique();
             $table->integer('subcategory_count')->default(0);
             $table->integer('category_status')->default(0);
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }

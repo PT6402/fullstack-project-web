@@ -28,4 +28,9 @@ class ColorSize extends Model
     {
         return $this->belongsTo(Product::class);
     }
+    public function cartItem()
+{
+    return $this->hasOne(CartItem::class, 'color_sizes');
+}
+
 }

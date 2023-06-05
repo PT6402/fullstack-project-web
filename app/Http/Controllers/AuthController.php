@@ -214,7 +214,7 @@ class AuthController extends Controller
         Mail::to($user->email)->send(new ResetPasswordEmail($user, $token));
 
         return response()->json([
-            'message' => 'An email has been sent to your email address. Please check your inbox to reset your password.'
+            'message' => 'An email has been sent to your email address. Please check your inbox to reset your password.', 'status' => 200
         ]);
     }
     public function currentLogin()
@@ -223,19 +223,18 @@ class AuthController extends Controller
             $user_id = auth('sanctum')->user()->id;
 
             $user = User::where('id', $user_id)->first();
+            $addresses = $user->addresses()->get();
             return response()->json([
                 'status' => 200,
                 'user' => [
                     'email' => $user->email,
                     'name' => $user->name,
-                    'role_as' => $user->role_as
-                ]
+                    'role_as' => $user->role_as,
+                    'addresses' => $addresses,
+                    'phone' => $user->phone,
+                    'user' => $user->name,
 
-            ]);
-        } else {
-            return response()->json([
-                'status' => 200,
-                'anonymous' => rand(1111, 9999)
+                ]
 
             ]);
         }
