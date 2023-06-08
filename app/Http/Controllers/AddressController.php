@@ -19,19 +19,21 @@ class AddressController extends Controller
     public function store(Request $request)
     {
         $user = $request->user();
-
+        $addressCount = $user->addresses()->count();
         $address = new Address([
             'user_id' => $user->id,
             'address' => $request->input('address'),
-            'default_address' => $user->addresses()->count() === 0 ? true : $request->input('default_address', false),
-            'city_province' => $request->input('city_province'),
-            'note' => $request->input('note'),
+            'isMain' =>  $request->input('isMain'),
+            'city' => $request->input('city'),
+            'province' => $request->input('province'),
+            'idAdd' => $addressCount + 1,
+
         ]);
 
         $user->addresses()->save($address);
 
         $response = [
-            'address' => $user->addresses()->get(),
+            'id' => $addressCount + 1,
             'status' => 200
         ];
 
@@ -54,16 +56,16 @@ class AddressController extends Controller
     {
         $user = $request->user();
 
-        $address = Address::where('user_id', $user->id)->find($request->addressId);
+        $address = Address::where('user_id', $user->id)->find($request->id);
 
         if (!$address) {
             return response()->json(['message' => 'Address not found'], 404);
         }
 
         $address->address = $request->input('address');
-        $address->default_address = $request->input('default_address');
-        $address->city_province = $request->input('city_province');
-        $address->note = $request->input('note');
+        $address->isMain = $request->input('isMain');
+        $address->city = $request->input('city');
+        $address->province = $request->input('province');
         $address->save();
 
         return response()->json(['message' => 'Address updated successfully']);
@@ -72,8 +74,8 @@ class AddressController extends Controller
     {
         $user = $request->user();
 
-        $addressId = $request->address_id;
-        $address = Address::where('user_id', $user->id)->find($addressId);
+
+        $address = Address::where('user_id', $user->id)->where("idAdd",$request->id)->first();
 
         if (!$address) {
             return response()->json(['message' => 'Address not found'], 404);

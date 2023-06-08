@@ -63,6 +63,8 @@ class ProductImageController extends Controller
 
         $validator = Validator::make($request->all(), [
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'product_id' => 'required|exists:products,id',
+            'color_id' => 'required|exists:color_sizes,color_id',
         ]);
 
         if ($validator->fails()) {
@@ -79,8 +81,9 @@ class ProductImageController extends Controller
 
             // Lưu thông tin hình ảnh vào bảng product_images
             $productImage = new ProductImage;
-            $productImage->product_id = $request->id; // ID của sản phẩm liên quan
-            $productImage->url = 'images/' . $imageName;
+            $productImage->product_id = $request->product_id; // ID của sản phẩm liên quan
+            $productImage->color_id = $request->color_id; // ID của sản phẩm liên quan
+            $productImage->url = '/images/' . $imageName;
             $productImage->save();
         }
 

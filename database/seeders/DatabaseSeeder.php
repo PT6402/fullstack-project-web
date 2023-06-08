@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Color;
 use App\Models\ColorSize;
 use App\Models\Product;
+use App\Models\ProductImage;
 use App\Models\Size;
 use App\Models\Subcategory;
 use App\Models\User;
@@ -88,12 +89,12 @@ class DatabaseSeeder extends Seeder
 
         ];
         $colors = [
-            ['color_name' => 'Red', 'color_code' => '#FF0000'],
-            ['color_name' => 'Green', 'color_code' => '#008000'],
-            ['color_name' => 'Blue', 'color_code' => '#0000FF'],
-            ['color_name' => 'Yellow', 'color_code' => '#FFFF00'],
-            ['color_name' => 'Orange', 'color_code' => '#FFA500'],
-            ['color_name' => 'Purple', 'color_code' => '#800080']
+            ['color_name' => 'red', 'color_code' => '#FF0000'],
+            ['color_name' => 'green', 'color_code' => '#008000'],
+            ['color_name' => 'blue', 'color_code' => '#0000FF'],
+            ['color_name' => 'yellow', 'color_code' => '#FFFF00'],
+            ['color_name' => 'orange', 'color_code' => '#FFA500'],
+            ['color_name' => 'purple', 'color_code' => '#800080']
         ];
 
         foreach ($colors as $colorData) {
@@ -130,7 +131,7 @@ class DatabaseSeeder extends Seeder
                 'product_type' => 'low top',
                 'product_material' => 'canvas',
                 'product_price' => 10,
-                'product_slug' => 'workaday',
+                'product_slug' => 'workaday_1',
                 'subcategory_id' => 1,
                 'colors' => [1, 2],
                 'sizes' => [1, 2],
@@ -142,7 +143,7 @@ class DatabaseSeeder extends Seeder
                 'product_type' => 'high top',
                 'product_material' => 'canvas',
                 'product_price' => 20,
-                'product_slug' => 'jazico',
+                'product_slug' => 'jazico_2',
                 'subcategory_id' => 2,
                 'colors' => [3, 4],
                 'sizes' => [3, 4],
@@ -154,7 +155,7 @@ class DatabaseSeeder extends Seeder
                 'product_type' => 'low top',
                 'product_material' => 'canvas',
                 'product_price' => 10,
-                'product_slug' => 'corluray-mix',
+                'product_slug' => 'corluray-mix_3',
                 'subcategory_id' => 3,
                 'colors' => [1, 2],
                 'sizes' => [1, 2],
@@ -166,7 +167,7 @@ class DatabaseSeeder extends Seeder
                 'product_type' => 'high top',
                 'product_material' => 'canvas',
                 'product_price' => 20,
-                'product_slug' => 'living-journey',
+                'product_slug' => 'living-journey_4',
                 'subcategory_id' => 4,
                 'colors' => [3, 4],
                 'sizes' => [3, 4],
@@ -178,7 +179,7 @@ class DatabaseSeeder extends Seeder
                 'product_type' => 'low top',
                 'product_material' => 'canvas',
                 'product_price' => 10,
-                'product_slug' => 'workaday',
+                'product_slug' => 'workaday_5',
                 'subcategory_id' => 5,
                 'colors' => [1, 2],
                 'sizes' => [1, 2],
@@ -190,7 +191,7 @@ class DatabaseSeeder extends Seeder
                 'product_type' => 'high top',
                 'product_material' => 'canvas',
                 'product_price' => 20,
-                'product_slug' => 'jazico',
+                'product_slug' => 'jazico_6',
                 'subcategory_id' => 6,
                 'colors' => [3, 4],
                 'sizes' => [3, 4],
@@ -202,7 +203,7 @@ class DatabaseSeeder extends Seeder
                 'product_type' => 'low top',
                 'product_material' => 'canvas',
                 'product_price' => 10,
-                'product_slug' => 'corluray-mix',
+                'product_slug' => 'corluray-mix_7',
                 'subcategory_id' => 7,
                 'colors' => [1, 2],
                 'sizes' => [1, 2],
@@ -214,7 +215,7 @@ class DatabaseSeeder extends Seeder
                 'product_type' => 'high top',
                 'product_material' => 'canvas',
                 'product_price' => 20,
-                'product_slug' => 'living-journey',
+                'product_slug' => 'living-journey_8',
                 'subcategory_id' => 8,
                 'colors' => [3, 4],
                 'sizes' => [3, 4],
@@ -255,7 +256,32 @@ class DatabaseSeeder extends Seeder
                 $colorSize->save();
             }
         }
+
+        foreach ($products as $index =>$productData) {
+            $product = Product::where("id",$index+1)->first();
+
+            if ($product) {
+                $colors = $productData['colors'];
+
+                foreach ($colors as $colorId) {
+                    // $imageName = $product->product_name.'.jpg';
+                    // Đường dẫn ảnh tùy thuộc vào color_id và product_id
+                    $imagePath = '/images/'.$product->product_name.'_'.$colorId.'.jpg';
+
+                    $productImage = new ProductImage();
+                    $productImage->product_id = $product->id;
+                    $productImage->color_id = $colorId;
+                    $productImage->url = $imagePath;
+                    $productImage->save();
+                }
+            }
+        }
     }
+
+
+
+
+
 
 
 }

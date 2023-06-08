@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Cartitem;
+use App\Models\Color;
+use App\Models\ColorSize;
 use App\Models\Discount;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\Size;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -77,7 +80,14 @@ class CartController extends Controller
     {
         $user = $request->user();
         $cart = Cart::where('user_id', $user->id)->first();
-
+        if (!$cart) {
+            return response()->json([
+                'status' => 200,
+                'totalAmount' => 0,
+                'discount' => 0,
+                'totalPrice' => 0,
+            ]);
+        }
         $cartItems = Cartitem::join('products', 'cartitems.product_id', '=', 'products.id')
             ->join('colors', 'cartitems.color_id', '=', 'colors.id')
             ->join('sizes', 'cartitems.size_id', '=', 'sizes.id')
@@ -182,6 +192,7 @@ class CartController extends Controller
                 'colorSizes' => $colorSizes,
                 'product_url' => $urls,
 
+
             ];
         });
 
@@ -197,11 +208,68 @@ class CartController extends Controller
 
 
 
+    public function deleteCart(Request $request)
+    {
+        $cart = $request->user()->cart;
+        $cart->delete();
+        return response()->json(['status' => 200]);
+    }
 
 
+    public function removeItemCart(Request $request)
+    {
+        $cart = $request->user()->cart;
+        $product = Product::find($request->product_id);
+        $color = Color::where('color_name', $request->color_name)->first();
+        $color_id = $color ? $color->id : null;
 
+        // Tìm size_id dựa trên size_name
+        $size = Size::where('size_name', $request->size_name)->first();
+        $size_id = $size ? $size->id : null;
+        $cartItem = $cart->items()
+            // ->join('colors', 'cartitems.color_id', '=', 'colors.id')
+            // ->join('sizes', 'cartitems.size_id', '=', 'sizes.id')
+            ->where('color_id', $color_id)
+            ->where('size_id', $size_id )
+            ->where('product_id', $request->product_id)
+            ->first();
+        if ($cartItem) {
+            $cartItem->quantity -= 1;
+            $cartItem->total_price = $cartItem->quantity * $product->product_price;
+            $cartItem->save();
+        }
+        $cart->total_amount -= 1;
+        $cart->total_price = $cart->items->sum('total_price');
+        $cart->save();
+        return response()->json(['status' => 200]);
+    }
+    public function deleteItemCart(Request $request)
+    {
+        $cart = $request->user()->cart;
+        $product = Product::find($request->product_id);
+        $color = Color::where('color_name', $request->color_name)->first();
+        $color_id = $color ? $color->id : null;
 
+        // Tìm size_id dựa trên size_name
+        $size = Size::where('size_name', $request->size_name)->first();
+        $size_id = $size ? $size->id : null;
+        $cartItem = $cart->items()
+            // ->join('colors', 'cartitems.color_id', '=', 'colors.id')
+            // ->join('sizes', 'cartitems.size_id', '=', 'sizes.id')
+            ->where('color_id', $color_id)
+            ->where('size_id', $size_id )
+            ->where('product_id', $request->product_id)
+            ->first();
+        if ($cartItem) {;
+           $quantity =  $cartItem->quantity ;
 
+            $cartItem->delete();
+        }
+        $cart->total_amount -=  $quantity;
+        $cart->total_price = $cart->items->sum('total_price');
+        $cart->save();
+        return response()->json(['status' => 200]);
+    }
 
 
 
@@ -228,25 +296,32 @@ class CartController extends Controller
             $cart = new Cart();
             $request->user()->cart()->save($cart);
         }
+        // Tìm color_id dựa trên color_name
+        $color = Color::where('color_name', $request->color_name)->first();
+        $color_id = $color ? $color->id : null;
 
-        $cartItem = $cart->items()->where('product_id', $request->product_id)
-            ->where(function ($query) use ($request) {
-                $query->where('color_id', $request->color_id)
-                    ->Where('size_id', $request->size_id);
-            })
+        // Tìm size_id dựa trên size_name
+        $size = Size::where('size_name', $request->size_name)->first();
+        $size_id = $size ? $size->id : null;
+        $cartItem = $cart->items()
+            // ->join('colors', 'cartitems.color_id', '=', 'colors.id')
+            // ->join('sizes', 'cartitems.size_id', '=', 'sizes.id')
+            ->where('color_id', $color_id)
+            ->where('size_id', $size_id )
+            ->where('product_id', $request->product_id)
             ->first();
-
         if ($cartItem) {
-            $cartItem->quantity += $request->quantity;
+         $cartItem->quantity +=1;
+
             $cartItem->total_price = $cartItem->quantity * $product->product_price;
             $cartItem->save();
         } else {
             $cartItem = new Cartitem([
                 'product_id' => $request->product_id,
-                'color_id' => $request->color_id,
-                'size_id' => $request->size_id,
-                'quantity' => $request->quantity,
-                'total_price' => $request->quantity * $product->product_price
+                'color_id' => $color_id,
+                'size_id' => $size_id,
+                'quantity' => 1,
+                'total_price' =>$product->product_price
             ]);
 
             $cart->items()->save($cartItem);
@@ -256,7 +331,7 @@ class CartController extends Controller
         $cart->total_price = $cart->items->sum('total_price');
         $cart->save();
 
-        return response()->json(['status'=>200]);
+        return response()->json(['status' => 200]);
     }
 
 
@@ -317,5 +392,27 @@ class CartController extends Controller
         $cart = Cart::where('user_id', $user->id)->get();
         // $total_amount = $cart->total_amount;
         return response()->json(['status' => 200, 'carts' => $cart]);
+
     }
+    public function inventory(Request $request)
+    {
+        $color = Color::where('color_name', $request->color_name)->first();
+        $color_id = $color ? $color->id : null;
+
+        $size = Size::where('size_name', $request->size_name)->first();
+        $size_id = $size ? $size->id : null;
+
+        $stock = ColorSize::where('color_id', $color_id)
+            ->where('size_id', $size_id)
+            ->where('product_id', $request->product_id)
+            ->first();
+
+        if ($stock) {
+            return response()->json(['stock' => $stock->quantity]);
+        }
+
+        return response()->json(['stock' => 0]);
+    }
+
+
 }

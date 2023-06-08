@@ -52,8 +52,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('store-review', [ReviewController::class, 'review']);
     Route::post('cancel-order', [OrderController::class, 'cancelOrder']);
     Route::post('view-cartitem',[CartController::class,'indexCartitem']);
+    Route::post('delete-cart',[CartController::class,'deleteCart']);
+    Route::post('remove-to-cart',[CartController::class,'removeItemCart']);
+    Route::post('delete-cartItem',[CartController::class,'deleteItemCart']);
     Route::get('view-product-test',[CartController::class,'showProduct']);
     Route::post('edit-cart',[CartController::class,'update']);
+    Route::post('stock',[CartController::class,'inventory']);
     Route::get('edit-cartitem/{id}',[CartController::class,'edit']);
     Route::post('view-cart-user',[CartController::class,'viewcart']);
     Route::post('store-address',[AddressController::class,'store']);
@@ -62,6 +66,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('update-address',[AddressController::class,'update']);
     Route::post('delete-address',[AddressController::class,'delete']);
     Route::post('update-phone-name',[Profile::class,'update_phone_name']);
+    Route::post('list-order',[OrderController::class,'viewOrder']);
 
 });
 

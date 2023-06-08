@@ -9,9 +9,12 @@ use App\Models\Order;
 use App\Models\Orderitem;
 use App\Models\Payment;
 use App\Models\Product;
+use App\Models\ProductImage;
 use App\Models\Review;
 use App\Models\Size;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+
 
 class OrderController extends Controller
 {
@@ -36,8 +39,13 @@ class OrderController extends Controller
             if ($status_payment == 1) {
                 $order = new Order([
                     'user_id' => $user->id,
-                    'shipping_address' => $request->input('shipping_address'),
-                    'customer_phone' => $request->input('customer_phone'),
+                    'address' => $request->input('address'),
+                    'name' => $request->input('name'),
+                    'phone' => $request->input('phone'),
+                    'standard' => $request->input('standard'),
+                    'express' => $request->input('express'),
+                    'city' => $request->input('city'),
+                    'province' => $request->input('province'),
                     'total_price' => $cart->total_price,
                     'discount_id' => $cart->discount_id,
                     'payment_method' => $payment_method,
@@ -83,8 +91,13 @@ class OrderController extends Controller
         } else {
             $order = new Order([
                 'user_id' => $user->id,
-                'shipping_address' => $request->input('shipping_address'),
-                'customer_phone' => $request->input('customer_phone'),
+                'address' => $request->input('address'),
+                'name' => $request->input('name'),
+                'phone' => $request->input('phone'),
+                'standard' => $request->input('standard'),
+                'express' => $request->input('express'),
+                'city' => $request->input('city'),
+                'province' => $request->input('province'),
                 'total_price' => $cart->total_price,
                 'discount_id' => $cart->discount_id,
                 'payment_method' => "COD",
@@ -143,7 +156,7 @@ class OrderController extends Controller
     public function cancelOrder(Request $request)
     {
         $user=$request->user();
-        $order = Order::where('id', $request->order_id)
+        $order = Order::where('id', $request->id)
             ->where('user_id', $user->id)
             ->first();
 
@@ -169,9 +182,116 @@ class OrderController extends Controller
                 $colorSize->save();
             }
 
-            return response()->json(['message' => 'Order cancelled successfully']);
+            return response()->json(['message' => 'Order cancelled successfully','status'=>200]);
         }
 
         return response()->json(['message' => 'Order not found'], 404);
     }
+    public function viewOrder(Request $request)
+{
+    $user = $request->user();
+    $orders = $user->orders()->with('orderItems.product', 'orderItems.color', 'orderItems.size')
+    // ->whereNotIn('status', [-1])
+    ->get();
+    $orders = $orders->map(function ($order) use ($user) {
+        $order->orderItems->each(function ($item) use ($order, $user) {
+            $item->color_name = $item->color->color_name;
+            $item->size_name = $item->size->size_name;
+            $item->product_name = $item->product->product_name;
+            unset($item->color);
+            unset($item->size);
+            unset($item->product);
+
+            $product_id = $this->getProductIdByOrderIdAndItemId($order->id, $item->id, $user);
+            $item->product_details = $this->getProductDetails($product_id);
+            $item->product_image = $this->getProductImage($item->color, $product_id);
+            unset($item->color);
+        });
+        return $order;
+    });
+
+    return response()->json(['orders' => $orders]);
+}
+
+public function getProductImage($color_id, $product_id)
+{
+    $productImage = ProductImage::where('color_id', $color_id->id)
+                                ->where('product_id', $product_id)
+                                ->first();
+
+    if ($productImage) {
+        return $productImage->url;
+    }
+
+    return null;
+}
+
+
+    public function getProductIdByOrderIdAndItemId($orderId, $itemId, $user)
+    {
+        $orderItem = $user->orders()->where('id', $orderId)
+                                   ->first()
+                                   ->orderItems()
+                                   ->where('id', $itemId)
+                                   ->first();
+
+        if ($orderItem) {
+            return $orderItem->product_id;
+        }
+
+        return null;
+    }
+
+    public function getProductDetails($productId)
+    {
+        $product = Product::find($productId);
+        if ($product) {
+            $category = $product->subcategory->category;
+            $subcategory = $product->subcategory;
+            $product_price = $product->product_price;
+
+            return [
+                'category_id' => $category->id,
+                'category_name' => $category->category_name,
+                'subcategory_id' => $subcategory->id,
+                'subcategory_name' => $subcategory->subcategory_name,
+                'product_price' => $product_price
+            ];
+        }
+
+        return null;
+    }
+
+    // public function getProductImage($colorId, $productId)
+    // {
+    //     $productImage = ProductImage::join('products', 'products.id', '=', 'product_images.product_id')
+    //                                 ->where('product_images.color_id', $colorId)
+    //                                 ->where('products.id', $productId)
+    //                                 ->select('product_images.url')
+    //                                 ->first();
+
+    //     if ($productImage) {
+    //         return $productImage->image;
+    //     }
+
+    //     return null;
+    // }
+
+
+
+
+
+    // public function viewOrder(Request $request)
+    // {
+    //     $user = $request->user();
+    //     $orders = $user->orders()
+    //         ->join('orderitems', 'orders.id', '=', 'orderitems.order_id')
+    //         ->join('colors', 'orderitems.color_id', '=', 'colors.id')
+    //         ->join('sizes', 'orderitems.size_id', '=', 'sizes.id')
+    //         ->join('products', 'orderitems.product_id', '=', 'products.id')
+    //         ->select('orders.*', 'colors.color_name', 'sizes.size_name', 'products.product_name')
+    //         ->get();
+
+    //     return response()->json(['orders' => $orders]);
+    // }
 }

@@ -15,8 +15,13 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('shipping_address');
-            $table->integer('customer_phone');
+            $table->string('address');
+            $table->string('name');
+            $table->string('city');
+            $table->string('province');
+            $table->integer('phone');
+            $table->integer('express');
+            $table->integer('standard');
             $table->integer('total_price');
             $table->integer('discount_id')->nullable();
             $table->integer('status')->default(0)->comment('0-handle,1-transport,2-success');

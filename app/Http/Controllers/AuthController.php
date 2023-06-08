@@ -165,8 +165,9 @@ class AuthController extends Controller
     public function resetPassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'old_password' => 'required',
-            'password' => 'required|min:8|confirmed',
+            'oldPass' => 'required',
+            'newPass' => 'required|min:8',
+            'password_confirmation' => 'required_with:newPass|same:newPass|min:8',
         ]);
 
         if ($validator->fails()) {
@@ -175,12 +176,12 @@ class AuthController extends Controller
         /** @var \App\Models\User $user **/
         $user = Auth::user();
 
-        if (!Hash::check($request->old_password, $user->password)) {
-            return response()->json(['error' => 'The old password does not match'], 422);
+        if (!Hash::check($request->oldPass, $user->password)) {
+            return response()->json(['error' => 'The old password does not match']);
         }
 
         $user->update([
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->newPass)
         ]);
 
         $user->tokens()->delete();

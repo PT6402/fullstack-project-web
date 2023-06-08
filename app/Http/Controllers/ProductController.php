@@ -74,7 +74,7 @@ class ProductController extends Controller
         $product->product_price = $request->input('price');
         $product->product_type = $request->input('type');
         $product->product_material = $request->input('material');
-        $product->product_slug = strtolower(str_replace(' ', '-', $request->input('name')));
+        $product->product_slug = strtolower(str_replace(' ', '-', $request->input('name'))).'_'.$product->id;
 
         $subcategory = Subcategory::findOrFail($request->input('subcategory_id'));
         $category = $subcategory->category;
