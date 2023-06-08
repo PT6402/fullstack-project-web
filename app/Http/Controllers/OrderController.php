@@ -146,6 +146,9 @@ class OrderController extends Controller
 
         if ($order) {
             $order->status = $request->status;
+            if ($request->status == 2) {
+                $order->status_payment == true;
+            }
             $order->save();
 
             return response()->json(['message' => 'Order status updated successfully']);
@@ -155,7 +158,7 @@ class OrderController extends Controller
     }
     public function cancelOrder(Request $request)
     {
-        $user=$request->user();
+        $user = $request->user();
         $order = Order::where('id', $request->id)
             ->where('user_id', $user->id)
             ->first();
@@ -182,58 +185,58 @@ class OrderController extends Controller
                 $colorSize->save();
             }
 
-            return response()->json(['message' => 'Order cancelled successfully','status'=>200]);
+            return response()->json(['message' => 'Order cancelled successfully', 'status' => 200]);
         }
 
         return response()->json(['message' => 'Order not found'], 404);
     }
     public function viewOrder(Request $request)
-{
-    $user = $request->user();
-    $orders = $user->orders()->with('orderItems.product', 'orderItems.color', 'orderItems.size')
-    // ->whereNotIn('status', [-1])
-    ->get();
-    $orders = $orders->map(function ($order) use ($user) {
-        $order->orderItems->each(function ($item) use ($order, $user) {
-            $item->color_name = $item->color->color_name;
-            $item->size_name = $item->size->size_name;
-            $item->product_name = $item->product->product_name;
-            unset($item->color);
-            unset($item->size);
-            unset($item->product);
+    {
+        $user = $request->user();
+        $orders = $user->orders()->with('orderItems.product', 'orderItems.color', 'orderItems.size')
+            // ->whereNotIn('status', [-1])
+            ->get();
+        $orders = $orders->map(function ($order) use ($user) {
+            $order->orderItems->each(function ($item) use ($order, $user) {
+                $item->color_name = $item->color->color_name;
+                $item->size_name = $item->size->size_name;
+                $item->product_name = $item->product->product_name;
+                unset($item->color);
+                unset($item->size);
+                unset($item->product);
 
-            $product_id = $this->getProductIdByOrderIdAndItemId($order->id, $item->id, $user);
-            $item->product_details = $this->getProductDetails($product_id);
-            $item->product_image = $this->getProductImage($item->color, $product_id);
-            unset($item->color);
+                $product_id = $this->getProductIdByOrderIdAndItemId($order->id, $item->id, $user);
+                $item->product_details = $this->getProductDetails($product_id);
+                $item->product_image = $this->getProductImage($item->color, $product_id);
+                unset($item->color);
+            });
+            return $order;
         });
-        return $order;
-    });
 
-    return response()->json(['orders' => $orders]);
-}
-
-public function getProductImage($color_id, $product_id)
-{
-    $productImage = ProductImage::where('color_id', $color_id->id)
-                                ->where('product_id', $product_id)
-                                ->first();
-
-    if ($productImage) {
-        return $productImage->url;
+        return response()->json(['orders' => $orders]);
     }
 
-    return null;
-}
+    public function getProductImage($color_id, $product_id)
+    {
+        $productImage = ProductImage::where('color_id', $color_id->id)
+            ->where('product_id', $product_id)
+            ->first();
+
+        if ($productImage) {
+            return $productImage->url;
+        }
+
+        return null;
+    }
 
 
     public function getProductIdByOrderIdAndItemId($orderId, $itemId, $user)
     {
         $orderItem = $user->orders()->where('id', $orderId)
-                                   ->first()
-                                   ->orderItems()
-                                   ->where('id', $itemId)
-                                   ->first();
+            ->first()
+            ->orderItems()
+            ->where('id', $itemId)
+            ->first();
 
         if ($orderItem) {
             return $orderItem->product_id;
