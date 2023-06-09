@@ -20,10 +20,11 @@ class AddressController extends Controller
     {
         $user = $request->user();
         $addressCount = $user->addresses()->count();
+        $isMain = ($addressCount === 0) ? true : $request->input('isMain');
         $address = new Address([
             'user_id' => $user->id,
             'address' => $request->input('address'),
-            'isMain' =>  $request->input('isMain'),
+            'isMain' =>  $isMain,
             'city' => $request->input('city'),
             'province' => $request->input('province'),
             'idAdd' => $addressCount + 1,

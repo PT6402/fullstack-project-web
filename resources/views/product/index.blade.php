@@ -15,7 +15,7 @@
     <div class="table-agile-info">
   <div class="panel panel-default">
     <div class="panel-heading">
-      <span style="font-size: 30px ; color:blue">List Of Product</span> 
+      <span style="font-size: 30px ; color:blue">List Of Product</span>
     </div>
     <div class="top-nav clearfix">
       <!--search & user info start-->
@@ -30,19 +30,19 @@
               </ul>
           </li>
           <!-- user login dropdown end -->
-         
+
       </ul>
       <!--search & user info end-->
   </div>
-    <div class="table-responsive">                 
+    <div class="table-responsive">
       <table id="allproduct" class="table table-striped b-t b-light">
         <thead>
           <tr>
             <th>Name</th>
             <th>Type</th>
             <th>Price</th>
-            <th>Category</th>   
-            <th>Subcategory</th>  
+            <th>Category</th>
+            <th>Subcategory</th>
             <th>Material</th>
             <th>Picture</th>
             <th style="width:30px;">Action</th>
@@ -55,9 +55,9 @@
             <td>{{ $pro->product_type }}</td>
             <td>{{ $pro->product_price }}</td>
             {{-- <td><img width="100px" src="{{ url('images/'.$pro->image) }}"/></td> --}}
-      
+
             {{-- <td>{{ number_format($pro->prices->price,100,',','.') }}</td> --}}
-           
+
             {{-- <td>
               @if ($pro->image && $pro->image->first())
                  <img src="fontend/Image/{{ $pro->image->first()->path }}" height="100" width="100" alt="{{ 'fontend/Image/' . $pro->image->first()->path}}">
@@ -67,8 +67,8 @@
             <td>{{ $pro->subcategory->subcategory_name }}</td>
             <td>{{ $pro->product_material }}</td>
              <td>
-            <img src="{{ 'fontend/Image/' . $pro->images->first()->url}}" height="100" width="100" alt="{{ 'fontend/Image/' . $pro->images->first()}}">
-           </td> 
+            <img src="{{ $pro->images->first()->url}}" height="100" width="100" alt="{{ '/images/' . $pro->images->first()->url}}">
+           </td>
             {{-- <td>{{ $pro->brand->name }}</td> --}}
             <td  style="display: flex; justify-content: space-between;">
                 {{-- <a class="btn btn-info btn-sm" href="{{URL::to('/edit-product/'.$pro->id)}}"> --}}
@@ -96,8 +96,8 @@
             <th>Name</th>
             <th>Type</th>
             <th>Price</th>
-            <th>Category</th>   
-            <th>Subcategory</th>  
+            <th>Category</th>
+            <th>Subcategory</th>
             <th>Material</th>
             <th>Picture</th>
             <th style="width:30px;">Action</th>

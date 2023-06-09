@@ -64,7 +64,7 @@ class ProductAdminController extends Controller
             foreach ($request->file('product_image') as $image) {
                 if ($image->isValid()) {
                     $imageName = time() . '_' . $image->getClientOriginalName();
-                    $image->move(public_path('fontend/Image'), $imageName);
+                    $image->move(public_path('images'), $imageName);
                     $productImages[] = $imageName;
                 }
             }
@@ -78,7 +78,8 @@ class ProductAdminController extends Controller
 
             $image = new ProductImage();
             $image->product_id = $product->id;
-            $image->url = $imageName;
+            $image->color_id = $data['color_id'];
+            $image->url = '/images/'.$imageName;
             $image->save();
         }
 
@@ -146,20 +147,20 @@ class ProductAdminController extends Controller
             foreach ($request->file('product_image') as $image) {
                 if ($image->isValid()) {
                     $imageName = time() . '_' . $image->getClientOriginalName();
-                    $image->move(public_path('fontend/Image'), $imageName);
+                    $image->move(public_path('images'), $imageName);
                     $productImages[] = $imageName;
                 }
             }
         }
+
         foreach ($productImages as $imageName) {
             $image = new ProductImage();
             $image->product_id = $product->id;
-            $image->color_id = $request->color_id;
+            $image->color_id = $data['color_id'];
 
-            $image->url = $imageName;
+            $image->url = '/images/'.$imageName;
             $image->save();
         }
-
         // color
         $colorsize = new ColorSize();
         $colorsize->product_id  = $product->id;
