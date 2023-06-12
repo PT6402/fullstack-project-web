@@ -37,4 +37,8 @@ class Orderitem extends Model
     // {
     //     return $this->belongsTo(Subcategory::class, 'subcategory_id');
     // }
+    public function review()
+{
+    return $this->hasOne(Review::class);
+}
 }

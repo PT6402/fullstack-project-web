@@ -12,7 +12,7 @@ class SubCategoryController extends Controller
     //
     public function index()
     {
-        $subcategories = Subcategory::select('subcategory_name', 'subcategory_slug', 'category_id')
+        $subcategories = Subcategory::select('subcategory_name', 'subcategory_slug', 'category_id','image')
             ->get();
 
         $categoryIds = $subcategories->pluck('category_id')->unique();

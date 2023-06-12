@@ -48,6 +48,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('delete-favorite', [FavoriteController::class, 'delete']);
     Route::post('store-payment', [PaymentController::class, 'store']);
     Route::post('code-discount', [CartController::class, 'applyDiscount']);
+    Route::post('remove-discount', [CartController::class, 'removeDiscount']);
     Route::post('find-review', [ReviewController::class, 'findReview']);
     Route::post('store-review', [ReviewController::class, 'review']);
     Route::post('cancel-order', [OrderController::class, 'cancelOrder']);

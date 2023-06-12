@@ -36,11 +36,14 @@ class DatabaseSeeder extends Seeder
                 'category_name' => 'men',
                 'category_slug' => 'men',
                 'category_status' => '0',
+                'image' => "/images/Menu_Nam.jpg"
+
             ],
             [
                 'category_name' => 'women',
                 'category_slug' => 'women',
                 'category_status' => '0',
+                'image' => "/images/Menu_Nu.jpg"
             ],
 
         ];
@@ -49,41 +52,49 @@ class DatabaseSeeder extends Seeder
                 'category_id' => 1,
                 'subcategory_name' => 'basas',
                 'subcategory_slug' => 'basas',
+                'image' => "/images/Corluray_Mix_1.jpg"
             ],
             [
                 'category_id' => 1,
                 'subcategory_name' => 'vintas',
                 'subcategory_slug' => 'vintas',
+                'image' => "/images/Corluray_MixWomen_2.jpg"
             ],
             [
                 'category_id' => 1,
                 'subcategory_name' => 'urbas',
                 'subcategory_slug' => 'urbas',
+                'image' => "/images/JazicoWomen_3.jpg"
             ],
             [
                 'category_id' => 1,
                 'subcategory_name' => 'pattas',
                 'subcategory_slug' => 'pattas',
+                'image' => "/images/JazicoWomen_4.jpg"
             ],
             [
                 'category_id' => 2,
                 'subcategory_name' => 'basas',
                 'subcategory_slug' => 'basas',
+                'image' => "/images/Living_Journey_3.jpg"
             ],
             [
                 'category_id' => 2,
                 'subcategory_name' => 'vintas',
                 'subcategory_slug' => 'vintas',
+                'image' => "/images/WorkadayWomen_1.jpg"
             ],
             [
                 'category_id' => 2,
                 'subcategory_name' => 'urbas',
                 'subcategory_slug' => 'urbas',
+                'image' => "/images/Jazico_4.jpg"
             ],
             [
                 'category_id' => 2,
                 'subcategory_name' => 'pattas',
                 'subcategory_slug' => 'pattas',
+                'image' => "/images/Workaday_1.jpg"
             ],
 
 
@@ -226,15 +237,15 @@ class DatabaseSeeder extends Seeder
 
         foreach ($products as $productData) {
             $product = new Product();
-            $product->product_name=$productData['product_name'];
-            $product->product_description=$productData['product_description'];
-            $product->product_type=$productData['product_type'];
-            $product->product_material=$productData['product_material'];
-            $product->product_price=$productData['product_price'];
-            $product->product_slug=$productData['product_slug'];
-            $product->subcategory_id=$productData['subcategory_id'];
+            $product->product_name = $productData['product_name'];
+            $product->product_description = $productData['product_description'];
+            $product->product_type = $productData['product_type'];
+            $product->product_material = $productData['product_material'];
+            $product->product_price = $productData['product_price'];
+            $product->product_slug = $productData['product_slug'];
+            $product->subcategory_id = $productData['subcategory_id'];
             $subcategory = Subcategory::find($productData['subcategory_id']);
-            $product->category_id =$subcategory->category_id;
+            $product->category_id = $subcategory->category_id;
             $product->save();
             $subcategory = SubCategory::find($productData['subcategory_id']);
             $subcategory->increment('product_count');
@@ -257,8 +268,8 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        foreach ($products as $index =>$productData) {
-            $product = Product::where("id",$index+1)->first();
+        foreach ($products as $index => $productData) {
+            $product = Product::where("id", $index + 1)->first();
 
             if ($product) {
                 $colors = $productData['colors'];
@@ -266,7 +277,7 @@ class DatabaseSeeder extends Seeder
                 foreach ($colors as $colorId) {
                     // $imageName = $product->product_name.'.jpg';
                     // Đường dẫn ảnh tùy thuộc vào color_id và product_id
-                    $imagePath = '/images/'.$product->product_name.'_'.$colorId.'.jpg';
+                    $imagePath = '/images/' . $product->product_name . '_' . $colorId . '.jpg';
 
                     $productImage = new ProductImage();
                     $productImage->product_id = $product->id;
@@ -277,11 +288,4 @@ class DatabaseSeeder extends Seeder
             }
         }
     }
-
-
-
-
-
-
-
 }

@@ -30,6 +30,18 @@ class Cart extends Model
         // trừ đi giảm giá
         return $total;
     }
+    public function totalPriceRemoveDiscount($totalPrice)
+    {
+        $total = $this->total_price;
+
+        if ($this->discount_id) {
+            $discount = Discount::find($this->discount_id);
+            $this->total_price +=  ($totalPrice * $discount->value / 100);
+        }
+        $this->save();
+        // trừ đi giảm giá
+        return $total;
+    }
 
     public function discount()
     {

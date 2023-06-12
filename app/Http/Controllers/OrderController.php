@@ -37,17 +37,22 @@ class OrderController extends Controller
                 ->latest()
                 ->value('status_payment');
             if ($status_payment == 1) {
-                $order = new Order([
+
+
+
+
+
+   $order = new Order([
                     'user_id' => $user->id,
-                    'address' => $request->input('address'),
-                    'name' => $request->input('name'),
+                    'address_label' => $request->input('address'),
+                    'name_user' => $request->input('name'),
                     'phone' => $request->input('phone'),
                     'standard' => $request->input('standard'),
                     'express' => $request->input('express'),
-                    'city' => $request->input('city'),
-                    'province' => $request->input('province'),
+
                     'total_price' => $cart->total_price,
-                    'discount_id' => $cart->discount_id,
+                    'discount_value' => $cart->discount_id ? $cart->discount->value : 0,
+                    'discount_name' => $cart->discount_id ? $cart->discount->name : "",
                     'payment_method' => $payment_method,
                     'status_payment' => $status_payment == '1' ? true : false,
                     'status' => 0,
@@ -91,15 +96,15 @@ class OrderController extends Controller
         } else {
             $order = new Order([
                 'user_id' => $user->id,
-                'address' => $request->input('address'),
-                'name' => $request->input('name'),
+                'address_label' => $request->input('address'),
+                'name_user' => $request->input('name'),
                 'phone' => $request->input('phone'),
                 'standard' => $request->input('standard'),
                 'express' => $request->input('express'),
-                'city' => $request->input('city'),
-                'province' => $request->input('province'),
+
                 'total_price' => $cart->total_price,
-                'discount_id' => $cart->discount_id,
+                'discount_value' => $cart->discount_id ? $cart->discount->value : 0,
+                'discount_name' => $cart->discount_id ? $cart->discount->name : "",
                 'payment_method' => "COD",
                 'status_payment' => false,
                 'status' => 0,
@@ -124,8 +129,9 @@ class OrderController extends Controller
                 $colorSize->save();
                 // create review
                 $review = new Review();
-                $review->product_id = $item->product->id;
+
                 $review->order_id = $order->id;
+                $review->orderitem_id = $orderItem->id;
                 $review->user_id = $user->id;
                 $review->save();
             }
@@ -193,9 +199,13 @@ class OrderController extends Controller
     public function viewOrder(Request $request)
     {
         $user = $request->user();
-        $orders = $user->orders()->with('orderItems.product', 'orderItems.color', 'orderItems.size')
+        $orders = $user->orders()
+
+            ->with('orderItems.product', 'orderItems.color', 'orderItems.size', 'orderItems.review')
+
             // ->whereNotIn('status', [-1])
             ->get();
+
         $orders = $orders->map(function ($order) use ($user) {
             $order->orderItems->each(function ($item) use ($order, $user) {
                 $item->color_name = $item->color->color_name;
@@ -209,12 +219,23 @@ class OrderController extends Controller
                 $item->product_details = $this->getProductDetails($product_id);
                 $item->product_image = $this->getProductImage($item->color, $product_id);
                 unset($item->color);
+
+                if ($item->review) {
+                    $item->status = $item->review->status;
+                    $item->comment = $item->review->comment;
+                    $item->rate = $item->review->rate;
+                } else {
+                    $item->status = null;
+                    $item->comment = null;
+                    $item->rate = null;
+                }
             });
             return $order;
         });
 
         return response()->json(['orders' => $orders]);
     }
+
 
     public function getProductImage($color_id, $product_id)
     {
@@ -252,18 +273,19 @@ class OrderController extends Controller
             $category = $product->subcategory->category;
             $subcategory = $product->subcategory;
             $product_price = $product->product_price;
-
             return [
                 'category_id' => $category->id,
                 'category_name' => $category->category_name,
                 'subcategory_id' => $subcategory->id,
                 'subcategory_name' => $subcategory->subcategory_name,
-                'product_price' => $product_price
+                'product_price' => $product_price,
+
             ];
         }
 
         return null;
     }
+
 
     // public function getProductImage($colorId, $productId)
     // {

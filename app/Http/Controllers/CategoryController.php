@@ -12,14 +12,18 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categorys = Category::all();
+        $categorys = Category::latest();
         $category = new  Category;
         $columnNames = $category->getColumnNames();
-
+        $category_name = $categorys->category_name;
+        $category_slug = $categorys->category_slug;
         return response()->json([
             'status' => 200,
             'headerTable' =>  $columnNames,
-            'bodyTable' => $categorys
+            'bodyTable' => $categorys,
+            'category_name' => $category_name,
+            'category_slug' => $category_slug,
+
         ]);
     }
 
@@ -31,7 +35,8 @@ class CategoryController extends Controller
             'category_name' => 'required|max:255|unique:categories',
         ]);
         if ($validator->fails()) {
-            return response()->json(['
+            return response()->json([
+                '
                 message' => $validator->messages()
             ]);
         }
@@ -89,7 +94,7 @@ class CategoryController extends Controller
         $category->category_slug = strtolower(Str::slug($request->input('category_name'), '-'));
         $category->save();
 
-        return response()->json(['message' => 'Category updated successfully!',  'status' => 200,'status_cate'=>$request->input('category_status')]);
+        return response()->json(['message' => 'Category updated successfully!',  'status' => 200, 'status_cate' => $request->input('category_status')]);
     }
 
     public function delete($id)
@@ -98,10 +103,9 @@ class CategoryController extends Controller
         $subcategories = $category->subcategories;
         if ($subcategories->isNotEmpty()) {
             $subcategoryNames = $subcategories->pluck('subcategory_name')->implode(', ');
-            return response()->json(['message' => "Cannot delete category. The following subcategories are still using it: $subcategoryNames",'status'=>400]);
+            return response()->json(['message' => "Cannot delete category. The following subcategories are still using it: $subcategoryNames", 'status' => 400]);
         }
         $category->delete();
-        return response()->json(['message' => 'Category deleted successfully.','status'=>200]);
+        return response()->json(['message' => 'Category deleted successfully.', 'status' => 200]);
     }
-
 }

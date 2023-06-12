@@ -200,7 +200,7 @@ class CartController extends Controller
             'status' => 200,
             'items' => $products->values(),
             'totalAmount' => $cart->total_amount,
-            'discount' => $cart->discount,
+            'discount' => !$cart->discount?[]:$cart->discount,
             'totalPrice' => $cart->total_price,
         ]);
     }
@@ -241,6 +241,7 @@ class CartController extends Controller
         $cart->total_amount -= 1;
         $cart->total_price = $cart->items->sum('total_price');
         $cart->save();
+        $cart->totalPrice();
         return response()->json(['status' => 200]);
     }
     public function deleteItemCart(Request $request)
@@ -330,8 +331,9 @@ class CartController extends Controller
         $cart->total_amount += 1;
         $cart->total_price = $cart->items->sum('total_price');
         $cart->save();
+        $cart->totalPrice();
 
-        return response()->json(['status' => 200]);
+        return response()->json(['status' => 200,'totalPrice'=>$cart->total_price]);
     }
 
 
@@ -377,6 +379,9 @@ class CartController extends Controller
         if (!$discount) {
             return response()->json(['message' => 'code not found']);
         }
+        if($cart->discount_id){
+            return response()->json(['check' => 1]);
+        }
         $cart->discount_id = $discount->id; // Lưu ID của mã giảm giá vào trường discount_id trong bảng Cart
         $cart->save();
 
@@ -384,7 +389,17 @@ class CartController extends Controller
         $cart->totalPrice(); // Tính tổng giá trị đơn hàng đã được trừ đi giảm giá
         // $cart->save();
 
-        return response()->json(['totalPrice' =>  $cart->total_price]);
+        return response()->json(['totalPrice' =>  $cart->total_price,"check"=>2,'discount'=>$discount]);
+    }
+
+
+    public function removeDiscount(Request $request){
+        $user = $request->user();
+        $cart = $user->carts()->first();
+        $cart->totalPriceRemoveDiscount($request->totalPrice);
+        $cart->discount_id = null;
+        $cart->save();
+        return response()->json(['totalPrice' =>  $cart->total_price,"check"=>0,'discount'=>[]]);
     }
     public function viewcart(Request $request)
     {

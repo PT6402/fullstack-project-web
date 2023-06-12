@@ -51,7 +51,7 @@ Route::prefix('subcategory')->group(function (){
 });
 Route::prefix('coupon')->group(function (){
     Route::get('/index',[CouponAdminController::class,'index']);
-    Route::get('/create', [CouponAdminController::class,'index']);
+    Route::get('/create', [CouponAdminController::class,'create']);
     Route::post('/postCreate',[CouponAdminController::class,'postCreate']);
     Route::get('/edit/{id}', [CouponAdminController::class,'edit']);
     Route::post('/postEdit',[CouponAdminController::class,'postEdit']);

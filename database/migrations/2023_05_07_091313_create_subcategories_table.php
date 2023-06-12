@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('subcategory_slug');
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->integer('subcategory_status')->default(0);
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }

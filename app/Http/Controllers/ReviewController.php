@@ -18,6 +18,7 @@ class ReviewController extends Controller
             ->first();
         if ($order) {
             $orderItem = $order->orderItems()->where('product_id', $request->product_id)->first();
+            // $orderItem=$request->orderItem_id;
 
             if ($orderItem) {
 
@@ -58,6 +59,6 @@ class ReviewController extends Controller
         $review->rate = $request->input('rate');
         $review->status = $request->input('status');
         $review->save();
-        return response()->json(['message' => 'Review create successfully']);
+        return response()->json(['message' => 'Review create successfully','status'=>200]);
     }
 }
