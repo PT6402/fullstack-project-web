@@ -55,10 +55,12 @@ class ReviewController extends Controller
                 'message' => 'review not found'
             ]);
         }
+
         $review->comment = $request->input('comment');
+
         $review->rate = $request->input('rate');
         $review->status = $request->input('status');
         $review->save();
-        return response()->json(['message' => 'Review create successfully','status'=>200]);
+        return response()->json(['message' => 'Review create successfully', 'status' => 200]);
     }
 }
