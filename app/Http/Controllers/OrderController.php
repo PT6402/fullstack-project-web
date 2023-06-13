@@ -131,6 +131,7 @@ class OrderController extends Controller
                 $review = new Review();
 
                 $review->order_id = $order->id;
+                $review->product_id = $item->product->id;
                 $review->orderitem_id = $orderItem->id;
                 $review->user_id = $user->id;
                 $review->save();

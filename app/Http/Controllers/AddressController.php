@@ -12,7 +12,9 @@ class AddressController extends Controller
     {
         $user = $request->user();
 
-        $addresses = Address::where('user_id', $user->id)->get();
+        $addresses = Address::where('user_id', $user->id)
+            ->orderByDesc('isMain') // Sắp xếp theo isMain giảm dần (true đứng đầu)
+            ->get();
 
         return response()->json(['addresses' => $addresses]);
     }
@@ -21,6 +23,9 @@ class AddressController extends Controller
         $user = $request->user();
         $addressCount = $user->addresses()->count();
         $isMain = ($addressCount === 0) ? true : $request->input('isMain');
+        if ($isMain && $user->addresses()->where('isMain', true)->exists()) {
+            $user->addresses()->update(['isMain' => false]);
+        }
         $address = new Address([
             'user_id' => $user->id,
             'address' => $request->input('address'),
@@ -33,12 +38,12 @@ class AddressController extends Controller
 
         $user->addresses()->save($address);
 
-        $response = [
-            'id' => $addressCount + 1,
-            'status' => 200
-        ];
+        // $response = [
+        //     'id' => $addressCount + 1,
+        //     'status' => 200
+        // ];
 
-        return response()->json($response, 201);
+        return response()->json(['status' => 200, 'id' => $addressCount + 1]);
     }
 
     public function edit(Request $request)
@@ -56,34 +61,88 @@ class AddressController extends Controller
     public function update(Request $request)
     {
         $user = $request->user();
-
+        $isMain = $request->input('isMain');
         $address = Address::where('user_id', $user->id)->find($request->id);
+
+        if ($isMain && $user->addresses()->where('isMain', true)->exists()) {
+            $user->addresses()->update(['isMain' => false]);
+        }
 
         if (!$address) {
             return response()->json(['message' => 'Address not found'], 404);
         }
 
         $address->address = $request->input('address');
-        $address->isMain = $request->input('isMain');
+        $address->isMain = $isMain;
         $address->city = $request->input('city');
         $address->province = $request->input('province');
         $address->save();
 
-        return response()->json(['message' => 'Address updated successfully']);
-    }
-    public function delete(Request $request)
-    {
-        $user = $request->user();
+        // Lấy tất cả địa chỉ của người dùng và sắp xếp lại theo idAdd
+        $addressList = $user->addresses()->orderBy('idAdd')->get();
 
-
-        $address = Address::where('user_id', $user->id)->where("idAdd",$request->id)->first();
-
-        if (!$address) {
-            return response()->json(['message' => 'Address not found'], 404);
+        // Gán lại giá trị idAdd dựa trên chỉ số index
+        foreach ($addressList as $index => $address) {
+            $address->idAdd = $index + 1;
+            $address->save();
         }
 
-        $address->delete();
-
-        return response()->json(['message' => 'Address deleted successfully']);
+        return response()->json(['message' => 'Address updated successfully']);
     }
+
+    public function delete(Request $request)
+{
+    $user = $request->user();
+    $idAdd = $request->id;
+
+    // Lấy tất cả các địa chỉ của người dùng
+    $addressList = $user->addresses()->get();
+
+    // Tìm địa chỉ cần xóa và kiểm tra xem nó có isMain là true hay không
+    $addressToDelete = $addressList->where('idAdd', $idAdd)->first();
+
+    if (!$addressToDelete) {
+        return response()->json(['message' => 'Address not found'], 404);
+    }
+
+    $isMainDeleted = $addressToDelete->isMain;
+
+    // Xóa địa chỉ cần xóa từ cơ sở dữ liệu
+    $addressToDelete->delete();
+
+    // Tạo một mảng mới để lưu trữ các địa chỉ sau khi xóa
+    $newAddressList = [];
+
+    foreach ($addressList as $address) {
+        if ($address->idAdd !== $idAdd) {
+            $newAddressList[] = $address;
+        }
+    }
+
+    // Kiểm tra xem trong mảng mới có địa chỉ isMain là true hay không
+    $hasMainAddress = collect($newAddressList)->contains('isMain', true);
+
+    // Nếu không có địa chỉ isMain là true và địa chỉ cần xóa có isMain=true, đặt địa chỉ đầu tiên trong mảng mới làm isMain
+    if (!$hasMainAddress && $isMainDeleted && count($newAddressList) > 0) {
+        $newAddressList[0]->isMain = true;
+    }
+
+    // Gán lại giá trị idAdd cho các địa chỉ trong mảng mới
+    for ($i = 0; $i < count($newAddressList); $i++) {
+        $newAddressList[$i]->idAdd = $i + 1;
+    }
+
+    // Lưu các thay đổi vào cơ sở dữ liệu
+    $user->addresses()->saveMany($newAddressList);
+
+    return response()->json(['message' => 'Address deleted successfully']);
+}
+
+
+    // public function delete(Request $request)
+    // {
+    //     // Logic xóa địa chỉ và gán lại isMain
+
+    //     return response()->json(['message' => 'Address deleted successfully']);
+    // }
 }

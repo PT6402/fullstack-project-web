@@ -65,6 +65,7 @@ class ProductController extends Controller
                 ->values();
 
             $product->colorSizes = $colorSizes;
+            $product->reviews;
 
             // Tạo mảng product_url chứa các URL cho mỗi color
             $product->product_url = $colorSizes->pluck('url')->toArray();
@@ -130,6 +131,8 @@ class ProductController extends Controller
         ->values();
 
     $product->colorSizes = $colorSizes;
+    $product->review=$product->reviews->where("status",1)->load('user');
+    unset($product->reviews);
 
      return response()->json([
             'status' => 200,

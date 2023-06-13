@@ -63,4 +63,8 @@ class ReviewController extends Controller
         $review->save();
         return response()->json(['message' => 'Review create successfully', 'status' => 200]);
     }
+    // public function findReview($id){
+    //     $review = Review::where("product_id",$id);
+    //     return  $review
+    // }
 }

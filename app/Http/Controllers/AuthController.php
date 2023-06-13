@@ -224,7 +224,8 @@ class AuthController extends Controller
             $user_id = auth('sanctum')->user()->id;
 
             $user = User::where('id', $user_id)->first();
-            $addresses = $user->addresses()->get();
+            $addresses = $user->addresses()->orderByDesc('isMain') // Sắp xếp theo isMain giảm dần (true đứng đầu)
+            ->get();
             return response()->json([
                 'status' => 200,
                 'user' => [
