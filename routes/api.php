@@ -35,6 +35,8 @@ Route::get('list-product/{productUrl}', [UserProductController::class, 'show']);
 Route::post('forgetPassword', [AuthController::class, 'forgetPassword']);
 Route::post('mailResetPassword', [AuthController::class, 'mailResetPassword']);
 Route::post('login', [AuthController::class, 'login'])->name('login');
+Route::get('rate', [ReviewController::class, 'calculateAverageRatingForProducts']);
+
 Route::get('currentLogin', [AuthController::class, 'currentLogin']);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('add-to-cart', [CartController::class, 'addToCart']);
@@ -52,24 +54,25 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('find-review', [ReviewController::class, 'findReview']);
     Route::post('store-review', [ReviewController::class, 'review']);
     Route::post('cancel-order', [OrderController::class, 'cancelOrder']);
-    Route::post('view-cartitem',[CartController::class,'indexCartitem']);
-    Route::post('delete-cart',[CartController::class,'deleteCart']);
-    Route::post('remove-to-cart',[CartController::class,'removeItemCart']);
-    Route::post('delete-cartItem',[CartController::class,'deleteItemCart']);
-    Route::get('view-product-test',[CartController::class,'showProduct']);
-    Route::post('edit-cart',[CartController::class,'update']);
-    Route::post('stock',[CartController::class,'inventory']);
-    Route::get('edit-cartitem/{id}',[CartController::class,'edit']);
-    Route::post('view-cart-user',[CartController::class,'viewcart']);
-    Route::post('store-address',[AddressController::class,'store']);
-    Route::post('edit-address',[AddressController::class,'edit']);
-    Route::post('view-address',[AddressController::class,'index']);
-    Route::post('update-address',[AddressController::class,'update']);
-    Route::post('delete-address',[AddressController::class,'delete']);
-    Route::post('update-phone-name',[Profile::class,'update_phone_name']);
-    Route::post('list-order',[OrderController::class,'viewOrder']);
-
+    Route::post('view-cartitem', [CartController::class, 'indexCartitem']);
+    Route::post('delete-cart', [CartController::class, 'deleteCart']);
+    Route::post('remove-to-cart', [CartController::class, 'removeItemCart']);
+    Route::post('delete-cartItem', [CartController::class, 'deleteItemCart']);
+    Route::get('view-product-test', [CartController::class, 'showProduct']);
+    Route::post('edit-cart', [CartController::class, 'update']);
+    Route::post('stock', [CartController::class, 'inventory']);
+    Route::get('edit-cartitem/{id}', [CartController::class, 'edit']);
+    Route::post('view-cart-user', [CartController::class, 'viewcart']);
+    Route::post('store-address', [AddressController::class, 'store']);
+    Route::post('edit-address', [AddressController::class, 'edit']);
+    Route::post('view-address', [AddressController::class, 'index']);
+    Route::post('update-address', [AddressController::class, 'update']);
+    Route::post('delete-address', [AddressController::class, 'delete']);
+    Route::post('update-phone-name', [Profile::class, 'update_phone_name']);
+    Route::post('list-order', [OrderController::class, 'viewOrder']);
+    Route::get('checkout-success', [PaymentController::class, 'success']);
 });
+
 
 //------------------------------------------[ADMIN]---------------------------------------------------
 Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
@@ -123,5 +126,5 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
     Route::get('view-discount', [DiscountController::class, 'show']);
     //
     Route::post('status-orders', [OrderController::class, 'updateOrderStatus']);
-    Route::get('view-cart',[CartController::class,'index']);
+    Route::get('view-cart', [CartController::class, 'index']);
 });

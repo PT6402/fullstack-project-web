@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('address_label');
             $table->string('name_user');
             $table->string('discount_name')->default("");
-            $table->integer('phone');
+            $table->string('phone');
             $table->integer('discount_value')->default(0);
             $table->integer('express');
             $table->integer('standard');

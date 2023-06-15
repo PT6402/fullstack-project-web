@@ -15,7 +15,7 @@
     <div class="table-agile-info">
   <div class="panel panel-default">
     <div class="panel-heading">
-      <span style="font-size: 30px ; color:blue">List Of Product</span>
+      <span style="font-size: 30px ; color:blue">List Of Product</span> 
     </div>
     <div class="top-nav clearfix">
       <!--search & user info start-->
@@ -30,22 +30,22 @@
               </ul>
           </li>
           <!-- user login dropdown end -->
-
+         
       </ul>
       <!--search & user info end-->
   </div>
-    <div class="table-responsive">
-      <table id="allproduct" class="table table-striped b-t b-light">
+    <div class="table-responsive">                 
+      <table id="allproduct" class="table table-bordered table-hover">
         <thead>
           <tr>
             <th>Name</th>
             <th>Type</th>
             <th>Price</th>
-            <th>Category</th>
-            <th>Subcategory</th>
+            <th>Category</th>   
+            <th>Subcategory</th>  
             <th>Material</th>
-            <th>Picture</th>
-            <th style="width:30px;">Action</th>
+            <th>Status</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -54,37 +54,33 @@
             <td>{{ $pro->product_name }}</td>
             <td>{{ $pro->product_type }}</td>
             <td>{{ $pro->product_price }}</td>
-            {{-- <td><img width="100px" src="{{ url('images/'.$pro->image) }}"/></td> --}}
-
-            {{-- <td>{{ number_format($pro->prices->price,100,',','.') }}</td> --}}
-
-            {{-- <td>
-              @if ($pro->image && $pro->image->first())
-                 <img src="fontend/Image/{{ $pro->image->first()->path }}" height="100" width="100" alt="{{ 'fontend/Image/' . $pro->image->first()->path}}">
-              @endif
-           </td> --}}
+           
             <td>{{ $pro->category->category_name }}</td>
             <td>{{ $pro->subcategory->subcategory_name }}</td>
             <td>{{ $pro->product_material }}</td>
-             <td>
-            <img src="{{ $pro->images->first()->url}}" height="100" width="100" alt="{{ '/images/' . $pro->images->first()->url}}">
-           </td>
-            {{-- <td>{{ $pro->brand->name }}</td> --}}
-            <td  style="display: flex; justify-content: space-between;">
-                {{-- <a class="btn btn-info btn-sm" href="{{URL::to('/edit-product/'.$pro->id)}}"> --}}
-                  {{-- <a class="btn btn-info btn-sm" href="{{URL::to('/edit-product/'.$pro->id)}}"> --}}
-                    {{-- <a class="btn btn-info btn-sm" href="{{ url('product/edit-product/'.$pro->id) }}">
-                  <i class="fas fa-pencil-alt"></i> Edit
+            <td>
+              @if ($pro->product_status == 0)
+              Hide
+              @elseif ($pro->product_status == 1)
+              Show
+              @elseif ($pro->product_status == 2)
+              New
+              @elseif ($pro->product_status == 3)
+              Sale
+              @endif
+          </td>
+                <td class="text-center">
+              <a class="btn btn-primary btn-sm" href="{{ url('product/edit-product/'.$pro->id) }}">
+                <i class="fas fa-pencil-alt"></i> Edit
               </a>
-              <a  onclick='return confirm("You sure you want to delete???")' class="btn btn-danger btn-sm" href="{{URL::to('product/delete/'.$pro->id)}}">
-                <i class="fas fa-trash" ></i> Delete
-            </a> --}}
-            {{-- <div class="btn-group"> --}}
-              <a class="btn btn-info btn-sm" href="{{ url('product/edit-product/'.$pro->id) }}">
-                  <i class="fas fa-pencil-alt"></i> Edit
-              </a>
-              <a onclick='return confirm("Are you sure you want to delete?")' class="btn btn-danger btn-sm" href="{{URL::to('product/delete/'.$pro->id)}}">
+              <a onclick='return confirm("Are you sure you want to delete?")' class="btn btn-info btn-sm" href="{{URL::to('product/delete/'.$pro->id)}}">
                   <i class="fas fa-trash"></i> Delete
+              </a>
+              <a class="btn btn-danger btn-sm" href="{{ url('product/update-color/'.$pro->id) }}">
+                <i class="fas fa-pencil-alt"></i> Create Color Size Quantity
+              </a>
+              <a class="btn btn-info btn-sm" href="{{ url('image/create/'.$pro->id) }}">
+                <i class="fas fa-pencil-alt"></i> Upload Image
               </a>
           {{-- </div> --}}
             </td>
@@ -96,11 +92,11 @@
             <th>Name</th>
             <th>Type</th>
             <th>Price</th>
-            <th>Category</th>
-            <th>Subcategory</th>
+            <th>Category</th>   
+            <th>Subcategory</th>  
             <th>Material</th>
-            <th>Picture</th>
-            <th style="width:30px;">Action</th>
+            <th>Status</th>
+            <th></th>
           </tr>
         </tfoot>
       </table>

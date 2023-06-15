@@ -1,13 +1,14 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SubAdminController;
 use App\Http\Controllers\CategoryAdminController;
-use App\Http\Controllers\ColorAdminController;
 use App\Http\Controllers\CouponAdminController;
 use App\Http\Controllers\OrderAdminController;
 use App\Http\Controllers\ProductAdminController;
+use App\Http\Controllers\ColorAdminController;
 use App\Http\Controllers\SizeAdminController;
-use App\Http\Controllers\SubAdminController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\InventoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,10 @@ Route::get('/', function () {
 Route::get('/reset-password-confirmation', function () {
     return view('reset-password-confirmation');
 })->name('reset-password-confirmation');
+Route::get('/', function () {
+    return view('layout.layout');
+});
+
 Route::get('/', function () {
     return view('layout.layout');
 });
@@ -76,6 +81,8 @@ Route::prefix('product')->group(function (){
     // Route::post('/postEdit',[ProductAdminController::class,'postEdit']);
     Route::get('/delete/{id}', [ProductAdminController::class,'delete_product']);
     Route::get('/view/{id}', [ProductAdminController::class,'view']);
+    Route::get('/update-color/{id}', [ProductAdminController::class,'updatecolor']);
+    Route::post('/post-update-color', [ProductAdminController::class,'postupdatecolor']);
 });
 Route::prefix('color')->group(function (){
     Route::get('/index',[ColorAdminController::class,'index']);
@@ -99,6 +106,9 @@ Route::prefix('size')->group(function (){
 // Inventory
 // Route::prefix('inventory')->group(function (){
     Route::get('inventory/index',[InventoryController::class,'index']);
+    Route::get('inventory/edit/{id}',[InventoryController::class,'edit']);
+    Route::post('inventory/postedit',[InventoryController::class,'postedit']);
+    Route::get('inventory/delete/{id}',[InventoryController::class,'delete']);
 //     Route::get('/create', [SizeAdminController::class,'create']);
 //     Route::post('/postCreate',[SizeAdminController::class,'postCreate']);
 //     Route::get('/edit/{id}', [SizeAdminController::class,'edit']);
@@ -106,3 +116,15 @@ Route::prefix('size')->group(function (){
 //     Route::get('/delete/{id}', [SizeAdminController::class,'delete']);
 //     Route::get('/view/{id}', [SizeAdminController::class,'view']);
 // });
+
+//Image
+Route::prefix('image')->group(function (){
+    Route::get('/index',[ProductAdminController::class,'indeximage'])->name('productimage.index');
+    Route::get('/create/{id}', [ProductAdminController::class,'createimage']);
+    Route::post('/postcreate',[ProductAdminController::class,'postcreateimage']);
+    Route::get('/edit/{id}', [ProductAdminController::class,'edit_image']);
+    Route::post('/postEdit',[ProductAdminController::class,'update_image']);
+    Route::get('/delete/{id}', [ProductAdminController::class,'deleteimage']);
+    Route::get('/view/{id}', [ProductAdminController::class,'view']);
+});
+

@@ -30,9 +30,10 @@ class AddressController extends Controller
             'user_id' => $user->id,
             'address' => $request->input('address'),
             'isMain' =>  $isMain,
+            'label'=>$request->input('label'),
             'city' => $request->input('city'),
             'province' => $request->input('province'),
-            'idAdd' => $addressCount + 1,
+            'idAdd' => $user->name.$request->input('address').$request->input('city').$request->input('province'),
 
         ]);
 
@@ -43,7 +44,7 @@ class AddressController extends Controller
         //     'status' => 200
         // ];
 
-        return response()->json(['status' => 200, 'id' => $addressCount + 1]);
+        return response()->json(['status' => 200, 'id' => $address->idAdd]);
     }
 
     public function edit(Request $request)
@@ -61,34 +62,42 @@ class AddressController extends Controller
     public function update(Request $request)
     {
         $user = $request->user();
+        $idAdd = $request->id;
         $isMain = $request->input('isMain');
-        $address = Address::where('user_id', $user->id)->find($request->id);
 
-        if ($isMain && $user->addresses()->where('isMain', true)->exists()) {
-            $user->addresses()->update(['isMain' => false]);
-        }
+        $address = Address::where('user_id', $user->id)->where('idAdd', $idAdd)->first();
 
         if (!$address) {
             return response()->json(['message' => 'Address not found'], 404);
         }
 
+        if ($isMain) {
+            $user->addresses()->where('idAdd', '!=', $idAdd)->update(['isMain' => false]);
+        }
+
         $address->address = $request->input('address');
         $address->isMain = $isMain;
+        $address->label = $request->input('label');
         $address->city = $request->input('city');
         $address->province = $request->input('province');
         $address->save();
 
         // Lấy tất cả địa chỉ của người dùng và sắp xếp lại theo idAdd
-        $addressList = $user->addresses()->orderBy('idAdd')->get();
+        // $addressList = $user->addresses()->orderBy('idAdd')->get();
 
-        // Gán lại giá trị idAdd dựa trên chỉ số index
-        foreach ($addressList as $index => $address) {
-            $address->idAdd = $index + 1;
-            $address->save();
-        }
+        // // Gán lại giá trị idAdd dựa trên chỉ số index
+        // $addressCount = count($addressList);
+        // for ($i = 0; $i < $addressCount; $i++) {
+        //     $addressList[$i]->idAdd = $i + 1;
+        //     $addressList[$i]->save();
+        // }
 
-        return response()->json(['message' => 'Address updated successfully']);
+        return response()->json(['message' => 'Address updated successfully', ]);
     }
+
+
+
+
 
     public function delete(Request $request)
 {
@@ -128,9 +137,9 @@ class AddressController extends Controller
     }
 
     // Gán lại giá trị idAdd cho các địa chỉ trong mảng mới
-    for ($i = 0; $i < count($newAddressList); $i++) {
-        $newAddressList[$i]->idAdd = $i + 1;
-    }
+    // for ($i = 0; $i < count($newAddressList); $i++) {
+    //     $newAddressList[$i]->idAdd = $i + 1;
+    // }
 
     // Lưu các thay đổi vào cơ sở dữ liệu
     $user->addresses()->saveMany($newAddressList);

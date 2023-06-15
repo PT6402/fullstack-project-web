@@ -19,7 +19,9 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:191',
             'email' => 'required|email|max:191|unique:users,email',
-            'password' => 'required|min:8|confirmed'
+            'password' => 'required|min:8|confirmed',
+            'phone' => 'required'
+
         ]);
         if ($validator->fails()) {
             # code...
@@ -30,6 +32,7 @@ class AuthController extends Controller
             # code...
             $user = User::create([
                 'name' => $request->name,
+                'phone' => $request->phone,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
@@ -86,7 +89,8 @@ class AuthController extends Controller
                         'message' => 'Logged In Successfully',
                         'role' => $role,
                         'phone' => $user->phone,
-                        "address" => $address
+                        "address" => $address,
+                        'id' => $user->id
 
                     ]
                 );
@@ -225,7 +229,7 @@ class AuthController extends Controller
 
             $user = User::where('id', $user_id)->first();
             $addresses = $user->addresses()->orderByDesc('isMain') // Sắp xếp theo isMain giảm dần (true đứng đầu)
-            ->get();
+                ->get();
             return response()->json([
                 'status' => 200,
                 'user' => [

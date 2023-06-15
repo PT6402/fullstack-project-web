@@ -41,7 +41,7 @@
             {{-- <th>Số lượng đã bán</th> --}}
             <th>Color</th>
             <th>Size</th>
-            {{-- <th>Action</th> --}}
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -61,12 +61,12 @@
                 <td>{{ $out->brand->name }}</td> --}}
                
                 <td>
-                  {{-- <a class="btn btn-info btn-sm" href="{{URL::to('/edit-product/'.$out->product_id)}}">
+                  <a class="btn btn-info btn-sm" href="{{ url('inventory/edit/'.$cl->id) }}">
                     <i class="fas fa-pencil-alt"></i> Edit
                 </a>
-                <a  onclick='return confirm("Chắc Hông Bạn Ơi ???")' class="btn btn-danger btn-sm" href="{{URL::to('/delete-product/'.$out->product_id)}}">
-                  <i class="fas fa-trash" ></i> Delete
-              </a> --}}
+                <a onclick='return confirm("Are you sure you want to delete?")' class="btn btn-danger btn-sm" href="{{URL::to('inventory/delete/'.$cl->id)}}">
+                  <i class="fas fa-trash"></i> Delete
+              </a>
               </td>
               </tr>
           @endforeach

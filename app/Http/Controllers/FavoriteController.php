@@ -14,7 +14,7 @@ class FavoriteController extends Controller
     {
         $user_id = $request->user()->id;
         $validator = Validator::make($request->all(), [
-            'product_id' => [
+            'id' => [
                 'required',
                 Rule::unique('favorites')->where(function ($query) use ($user_id) {
                     return $query->where('user_id', $user_id);
@@ -27,33 +27,28 @@ class FavoriteController extends Controller
         }
         $favorite = Favorite::create([
             'user_id' => $request->user()->id,
-            'product_id' => $request->input('product_id')
+            'product_id' => $request->input('id')
         ]);
 
-        return response()->json(['message' => 'Product added to favorites', $favorite]);
+        return response()->json(['message' => 'Product added to favorites', $favorite,'status'=>200]);
     }
 
     public function index(Request $request)
     {
         $user = $request->user();
         $favorite = Favorite::where('user_id', $user->id)->get();
-        return response()->json(['favorite' => $favorite]);
-        
+        return response()->json(['favorite' => $favorite, 'status' => 200]);
     }
 
     public function delete(Request $request)
     {
         $user = $request->user();
-        $favorite = Favorite::where('user_id', $user->id)->where('product_id', $request->product_id)->first();
+        $favorite = Favorite::where('user_id', $user->id)->where('product_id', $request->id)->first();
         if (!$favorite) {
             return response()->json(['message' => 'No favorite existed'], 404);
         }
-        $favorite->id->delete();
+        $favorite->delete();
 
-        return response()->json(['favorite' => $favorite]);
+        return response()->json(['favorite' => $favorite,'status'=>200]);
     }
-
-    
-
-   
 }

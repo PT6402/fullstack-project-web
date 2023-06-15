@@ -12,18 +12,19 @@ class SubCategoryController extends Controller
     //
     public function index()
     {
-        $subcategories = Subcategory::select('subcategory_name', 'subcategory_slug', 'category_id','image')
+        $subcategories = Subcategory::select('subcategory_name', 'subcategory_slug', 'category_id','image',)
             ->get();
 
         $categoryIds = $subcategories->pluck('category_id')->unique();
 
         $categories = Category::whereIn('id', $categoryIds)
-            ->select('id', 'category_name')
+            ->select('id', 'category_name','category_slug')
             ->get();
 
         $subcategoriesWithCategory = $subcategories->map(function ($subcategory) use ($categories) {
             $category = $categories->firstWhere('id', $subcategory->category_id);
             $subcategory->category_name = $category->category_name;
+            $subcategory->category_slug = $category->category_slug;
             return $subcategory;
         });
 

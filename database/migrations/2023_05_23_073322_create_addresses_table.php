@@ -16,10 +16,11 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('address');
+            $table->string('label')->nullable();
             $table->boolean('isMain')->default(false);
             $table->string('city');
             $table->string('province');
-            $table->integer('idAdd');
+            $table->string('idAdd');
             $table->timestamps();
         });
     }

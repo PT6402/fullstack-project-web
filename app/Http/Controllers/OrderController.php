@@ -28,70 +28,68 @@ class OrderController extends Controller
         /// kiểm tra trong payment,method_payment=credit-card,status_payment có hoàn tất chưa nếu có thì tạo order
         $payment_method = Payment::where('user_id', $user->id)
             ->where('cart_id', $cart->id)
-            ->latest()
+            ->first()
             ->value('payment_method');
         if ($payment_method == 'credit-card') {
-            $status_payment = Payment::where('user_id', $user->id)
-                ->where('cart_id', $cart->id)
-                ->where('payment_method', $payment_method)
-                ->latest()
-                ->value('status_payment');
-            if ($status_payment == 1) {
+            // $status_payment = Payment::where('user_id', $user->id)
+            //     ->where('cart_id', $cart->id)
+            //     ->where('payment_method', $payment_method)
+            //     ->latest()
+            //     ->value('status_payment');
 
+            $order = new Order([
+                'user_id' => $user->id,
+                'address_label' => $request->input('address'),
+                'name_user' => $request->input('name'),
+                'phone' => $request->input('phone'),
+                'standard' => $request->input('standard'),
+                'express' => $request->input('express'),
 
+                'total_price' => $cart->total_price,
+                'discount_value' => $cart->discount_id ? $cart->discount->value : 0,
+                'discount_name' => $cart->discount_id ? $cart->discount->name : "",
+                'payment_method' => $payment_method,
+                'status_payment' =>  true,
+                'status' => 0,
+            ]);
+            $order->save();
 
+            foreach ($cart->items as $item) {
+                // if ($order->id) {
 
-
-   $order = new Order([
-                    'user_id' => $user->id,
-                    'address_label' => $request->input('address'),
-                    'name_user' => $request->input('name'),
-                    'phone' => $request->input('phone'),
-                    'standard' => $request->input('standard'),
-                    'express' => $request->input('express'),
-
-                    'total_price' => $cart->total_price,
-                    'discount_value' => $cart->discount_id ? $cart->discount->value : 0,
-                    'discount_name' => $cart->discount_id ? $cart->discount->name : "",
-                    'payment_method' => $payment_method,
-                    'status_payment' => $status_payment == '1' ? true : false,
-                    'status' => 0,
+                $orderItem = new Orderitem([
+                    'order_id' => $order->id,
+                    'product_id' => $item->product->id,
+                    'color_id' => $item->color->id,
+                    'size_id' => $item->size->id,
+                    'quantity' => $item->quantity,
+                    'total_price' => $item->total_price,
                 ]);
-                $order->save();
-                foreach ($cart->items as $item) {
-                    $orderItem = new Orderitem([
-                        'order_id' => $order->id,
-                        'product_id' => $item->product->id,
-                        'color_id' => $item->color->id,
-                        'size_id' => $item->size->id,
-                        'quantity' => $item->quantity,
-                        'total_price' => $item->total_price,
-                    ]);
-                    $orderItem->save();
-                    //cập nhật lại số lượng
-                    $colorSize = ColorSize::where('color_id', $item->color->id)
-                        ->where('size_id', $item->size->id)
-                        ->where('product_id', $item->product->id)
-                        ->first();
-                    if (!$colorSize) {
-                        return response()->json([
-                            'message' => 'not match color-size'
-                        ],);
-                    }
-                    $colorSize->quantity -= $item->quantity;
-                    $colorSize->save();
-                    // create review
-                    $review = new Review();
-                    $review->product_id = $item->product->id;
-                    $review->order_id = $order->id;
-                    $review->user_id = $user->id;
-                    $review->save();
+                $orderItem->save();
+
+                //cập nhật lại số lượng
+                $colorSize = ColorSize::where('color_id', $item->color->id)
+                    ->where('size_id', $item->size->id)
+                    ->where('product_id', $item->product->id)
+                    ->first();
+                if (!$colorSize) {
+                    return response()->json([
+                        'message' => 'not match color-size'
+                    ],);
                 }
-            } else {
-                return response()->json([
-                    'message' => 'Payment Failed!',
-                    'status_payment' => $status_payment
-                ],);
+                $colorSize->quantity -= $item->quantity;
+                $colorSize->save();
+                // create review
+                $review = new Review();
+                $review->product_id = $item->product->id;
+                $review->order_id = $order->id;
+                $review->orderitem_id = $orderItem->id;
+                $review->user_id = $user->id;
+                $review->save();
+                // }
+            }
+            if ($cart) {
+                $cart->delete();
             }
         } else {
             $order = new Order([
@@ -136,13 +134,14 @@ class OrderController extends Controller
                 $review->user_id = $user->id;
                 $review->save();
             }
+            $cart->delete();
         }
 
         // Tạo mới các bản ghi trong bảng order_item
 
 
         // Xóa cart hiện tại
-        $cart->delete();
+        // $cart->delete();
 
         return response()->json(['message' => 'Order placed successfully'], 201);
     }

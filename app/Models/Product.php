@@ -18,8 +18,7 @@ class Product extends Model
         'subcategory_id',
         'product_status',
         'product_type',
-        'product_material'
-,'id'
+        'product_material', 'id'
     ];
 
     public function category()
@@ -30,6 +29,10 @@ class Product extends Model
     public function subcategory()
     {
         return $this->belongsTo(Subcategory::class);
+    }
+    public function item()
+    {
+        return $this->belongsTo(Cartitem::class);
     }
 
 
@@ -51,14 +54,44 @@ class Product extends Model
     }
     public function colorSizes()
     {
-        return $this->belongsToMany(ColorSize::class,'color_sizes');
+        return $this->belongsToMany(ColorSize::class, 'color_sizes');
     }
     public function reviews()
     {
         return $this->hasMany(Review::class);
     }
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
     public function saleItems()
     {
         return $this->belongsToMany(SaleItem::class);
+    }
+    public function calculateAverageRatingForProducts()
+    {
+        // Lấy danh sách tất cả sản phẩm
+        $products = Product::where("id", $this->id)->get();
+
+        foreach ($products as $product) {
+            // Lấy tất cả các đánh giá (ratings) của sản phẩm
+            $ratings = $product->reviews;
+
+            // Tính tổng các giá trị rating
+            $totalRating = 0;
+            $countRate = 0;
+            foreach ($ratings as $rating) {
+                $totalRating += $rating->rate;
+                $countRate++;
+            }
+
+            // Tính lượt rate trung bình
+            $averageRating = count($ratings) > 0 ? round($totalRating / count($ratings), 1) : 0;
+
+            // Lưu lượt rate trung bình vào sản phẩm
+            // $averageRating;
+
+            return  ["rate" => $averageRating, "count" => $countRate++];
+        }
     }
 }
